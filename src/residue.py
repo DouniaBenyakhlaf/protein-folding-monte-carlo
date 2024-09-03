@@ -76,3 +76,15 @@ class Residue:
         """
         self.x_coord = x_coor
         self.y_coord = y_coor
+
+    def get_number(self):
+        """
+        Retrieve the residue number.
+
+        Returns
+        -------
+        int
+            The residue number.
+        """
+        return self.number
+
