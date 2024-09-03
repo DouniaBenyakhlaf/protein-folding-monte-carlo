@@ -1,5 +1,6 @@
 # from residue import * # already imported in protein class
 from protein import *
+from lattice import *
 
 if __name__ == "__main__":
 
@@ -20,3 +21,8 @@ if __name__ == "__main__":
     print("=================== Test of Protein class ===================")
     protein_1 = Protein("HHPHPP")
     protein_1.print_sequence()
+
+    # =================== Test of Lattice class ===================
+    print("=================== Test of Lattice class ===================")
+    lattice_1 = Lattice(protein_1)
+    lattice_1.print_lattice()
