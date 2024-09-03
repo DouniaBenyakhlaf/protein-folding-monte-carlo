@@ -1,8 +1,7 @@
-README - APL (Aire Par Lipide)
-M1BI Dynamique Moléculaire - 2024
+README - protein-folding-monte-carlo
+M2BI - 2024
 ==============
 M2BI : Dounia BENYAKHLAF (22007439)
-# protein-folding-monte-carlo
 Folding of a simplified protein model using a Monte Carlo algorithm and replica exchange.
 ## Conda environment
 Install conda.
