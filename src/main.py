@@ -1,4 +1,5 @@
-from residue import *
+# from residue import * # already imported in protein class
+from protein import *
 
 if __name__ == "__main__":
 
@@ -14,3 +15,8 @@ if __name__ == "__main__":
     print(arginine.is_connected(alanine))
     alanine.set_coordinate(11, 11)
     alanine.res_description()
+
+    # =================== Test of Protein class ===================
+    print("=================== Test of Protein class ===================")
+    protein_1 = Protein("GGARLF")
+    protein_1.print_sequence()
