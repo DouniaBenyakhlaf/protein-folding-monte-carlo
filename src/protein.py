@@ -43,3 +43,19 @@ class Protein:
         print(f"Protein length = {self.length}")
         for residue in self.sequence:
             residue.res_description()
+
+    def get_residue(self, residue_number):
+        """
+        Retrieve a residue from the protein sequence by its number.
+
+        Parameters
+        ----------
+        residue_number : int
+            The position number of the residue in the sequence (1-based index).
+
+        Returns
+        -------
+        Residue
+            The Residue object at the specified position in the sequence.
+        """
+        return self.sequence[residue_number - 1]
