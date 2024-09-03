@@ -59,3 +59,14 @@ class Protein:
             The Residue object at the specified position in the sequence.
         """
         return self.sequence[residue_number - 1]
+
+    def get_length(self):
+        """
+        Retrieve the length of the protein sequence.
+
+        Returns
+        -------
+        int
+            The number of residues in the protein sequence.
+        """
+        return self.length
