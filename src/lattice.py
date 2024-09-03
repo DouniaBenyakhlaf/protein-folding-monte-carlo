@@ -38,6 +38,9 @@ class Lattice:
             self.grid[i, j] = residue
 
     def print_lattice(self):
+        """
+        Print a visual representation of the lattice grid.
+        """
         # Rewrite all the print as seen in script course
         for i in range(self.dim):
             line = "|"
