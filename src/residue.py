@@ -16,26 +16,23 @@ class Residue:
         The y coordinate of the residue in the lattice.
     """
 
-    def __init__(self, name, number, type, x_coord, y_coord):
+    def __init__(self, type, number, x_coord, y_coord):
         """
-        Initializes a Residue instance with a name, number, type, and coordinates.
+        Initializes a Residue instance with a type, number, and coordinates.
 
         Parameters
         ----------
-        name : str
-            The code name of the residue (one letter).
-        number : int
-            The residue number.
         type : str
             The residue type : hydrophobic (H) or polar (P).
+        number : int
+            The residue number.
         x_coord : int
             The x coordinate of the residue in the lattice.
         y_coord : int
             The y coordinate of the residue in the lattice.
         """
-        self.name = name
-        self.number = number
         self.type = type
+        self.number = number
         self.x_coord = x_coord
         self.y_coord = y_coord
 
@@ -45,7 +42,7 @@ class Residue:
         and position in the lattice.
         """
         print(
-            f"The residue {self.name}{self.number} of type {self.type} is in position ({self.x_coord},{self.y_coord}) in the lattice."
+            f"The residue {self.type}{self.number} is in position ({self.x_coord},{self.y_coord}) in the lattice."
         )
 
     def is_connected(self, res):
