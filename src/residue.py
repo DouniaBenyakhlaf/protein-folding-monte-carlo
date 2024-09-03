@@ -88,3 +88,13 @@ class Residue:
         """
         return self.number
 
+    def get_type(self):
+        """
+        Retrieve the residue type.
+
+        Returns
+        -------
+        str
+            The residue type ('H' for hydrophobic or 'P' for polar).
+        """
+        return self.type
