@@ -65,3 +65,28 @@ class Residue:
             differ by 1), False otherwise.
         """
         return abs(self.number - res.number) == 1
+
+    def is_adjacent(self, residue2):
+        """
+        Determine if the current residue is adjacent to another residue.
+
+        Two residues are considered adjacent if they are next to each other
+        either horizontally or vertically in the lattice.
+
+        Parameters
+        ----------
+        residue2 : Residue
+            The other residue to compare with the current residue.
+
+        Returns
+        -------
+        bool
+            True if the current residue is adjacent to residue2, False otherwise.
+        """
+        return (
+            abs(self.i_coord - residue2.i_coord) == 1
+            and self.j_coord == residue2.j_coord
+        ) or (
+            abs(self.j_coord - residue2.j_coord) == 1
+            and self.i_coord == residue2.i_coord
+        )
