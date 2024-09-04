@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
     # =================== Test of Protein class ===================
     print("=================== Test of Protein class ===================")
-    protein_1 = Protein("HHPHPP")
+    protein_1 = Protein("AASASS")
     print(protein_1)
 
     # =================== Test of Lattice class ===================

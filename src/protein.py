@@ -7,7 +7,9 @@ class Protein:
 
     Attributes
     ----------
-    sequence : list[Residue]
+    aa_sequence : str
+        A string of the amino acid sequence (one letter code)
+    hp_sequence : list[Residue]
         A list of Residue objects representing the protein sequence.
     length : int
         The number of residues in the protein sequence.
@@ -17,6 +19,30 @@ class Protein:
         The last residue in the protein sequence.
     """
 
+    # Dictionary containing the type of each residue : H for hydrophobic and P for polar
+    RESIDUE_TYPE_DICT = {
+        "A": "H",  # Alanine
+        "R": "P",  # Arginine
+        "N": "P",  # Asparagine
+        "D": "P",  # Aspartic acid
+        "C": "H",  # Cysteine
+        "E": "P",  # Glutamic acid
+        "Q": "P",  # Glutamine
+        "G": "H",  # Glycine
+        "H": "P",  # Histidine
+        "I": "H",  # Isoleucine
+        "L": "H",  # Leucine
+        "K": "P",  # Lysine
+        "M": "H",  # Methionine
+        "F": "H",  # Phenylalanine
+        "P": "H",  # Proline
+        "S": "P",  # Serine
+        "T": "P",  # Threonine
+        "W": "H",  # Tryptophan
+        "Y": "P",  # Tyrosine
+        "V": "H",  # Valine
+    }
+
     def __init__(self, str_sequence):
         """
         Initialize a Protein instance with a string sequence.
@@ -24,17 +50,18 @@ class Protein:
         Parameters
         ----------
         str_sequence : str
-            A string representing the sequence of the protein.
+            A string representing the amino acid sequence of the protein.
         """
-        self.sequence = []
+        self.aa_sequence = str_sequence
+        self.hp_sequence = []
         protein_length = len(str_sequence)
         for position in range(protein_length):
-            type_residue = str_sequence[position]
+            type_residue = Protein.RESIDUE_TYPE_DICT[str_sequence[position]]
             new_residue = Residue(type_residue, position + 1, -1, -1)
-            self.sequence.append(new_residue)
+            self.hp_sequence.append(new_residue)
         self.length = protein_length
-        self.first_residue = self.sequence[0]
-        self.last_residue = self.sequence[-1]
+        self.first_residue = self.hp_sequence[0]
+        self.last_residue = self.hp_sequence[-1]
 
     def __str__(self):
         """
@@ -46,8 +73,8 @@ class Protein:
             A formatted string describing the protein, including its length and
             the sequence of residues with their types and numbers.
         """
-        description = f"Protein length = {self.length}\nSequence : "
-        for residue in self.sequence:
+        description = f"Protein length = {self.length}\nAA_Sequence : {self.aa_sequence}\nHP_Sequence : "
+        for residue in self.hp_sequence:
             description += f"{residue.type}{residue.number} "
         return description
 
@@ -65,4 +92,4 @@ class Protein:
         Residue
             The Residue object at the specified position in the sequence.
         """
-        return self.sequence[residue_number - 1]
+        return self.hp_sequence[residue_number - 1]
