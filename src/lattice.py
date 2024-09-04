@@ -26,15 +26,14 @@ class Lattice:
             The protein that will be contained within the lattice.
         """
         self.protein = protein
-        # Simplification: protein.length + 2 to ensure that a residue always has 4 neighboring cells.
-        self.dim = protein.get_length() + 2
+        self.dim = protein.length
         self.grid = np.empty((self.dim, self.dim), dtype=object)
         self.grid[:] = None
         # The protein is initially unfolded and placed horizontally in the lattice
         i = self.dim // 2  # the middle of the lattice
         for j in range(1, self.dim - 1):
             residue = self.protein.get_residue(j)
-            residue.set_coordinate(j, i)
+            residue.x_coord, residue.y_coord = j, i
             self.grid[i, j] = residue
 
     def print_lattice(self):
@@ -49,7 +48,7 @@ class Lattice:
                 if residue == None:
                     line += "  |"
                 else:
-                    line += residue.get_type()
-                    line += str(residue.get_number())
+                    line += residue.type
+                    line += str(residue.number)
                     line += "|"
             print(line)

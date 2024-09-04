@@ -14,8 +14,6 @@ if __name__ == "__main__":
     alanine.res_description()
     print(arginine.is_connected(glycine))
     print(arginine.is_connected(alanine))
-    alanine.set_coordinate(11, 11)
-    alanine.res_description()
 
     # =================== Test of Protein class ===================
     print("=================== Test of Protein class ===================")
@@ -26,3 +24,4 @@ if __name__ == "__main__":
     print("=================== Test of Lattice class ===================")
     lattice_1 = Lattice(protein_1)
     lattice_1.print_lattice()
+    print(lattice_1.compute_energy())

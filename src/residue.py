@@ -62,39 +62,3 @@ class Residue:
             differ by 1), False otherwise.
         """
         return abs(self.number - res.number) == 1
-
-    def set_coordinate(self, x_coor, y_coor):
-        """
-        Set the coordinates of the residue in the lattrice.
-
-        Parameters
-        ----------
-        x_coor : int
-            The x coordinate to set for the residue.
-        y_coor : int
-            The y coordinate to set for the residue.
-        """
-        self.x_coord = x_coor
-        self.y_coord = y_coor
-
-    def get_number(self):
-        """
-        Retrieve the residue number.
-
-        Returns
-        -------
-        int
-            The residue number.
-        """
-        return self.number
-
-    def get_type(self):
-        """
-        Retrieve the residue type.
-
-        Returns
-        -------
-        str
-            The residue type ('H' for hydrophobic or 'P' for polar).
-        """
-        return self.type
