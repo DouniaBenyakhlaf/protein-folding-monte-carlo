@@ -27,6 +27,7 @@ class Lattice:
         """
         self.protein = protein
         self.dim = protein.length
+        if grid is None:
         self.grid = np.empty((self.dim, self.dim), dtype=object)
         self.grid[:] = None
         # The protein is initially unfolded and placed horizontally in the lattice
@@ -53,8 +54,8 @@ class Lattice:
             line = "|"
             for j in range(self.dim):
                 residue = self.grid[i, j]
-                if residue == None:
-                    line += "  |"
+                if residue is None:
+                    line += "    |"
                 else:
                     line += residue.type
                     line += str(residue.number)
@@ -85,13 +86,13 @@ class Lattice:
             The list will be empty if there are no adjacent residues.
         """
         adjacents = []
-        if pos_i + 1 < self.dim and self.grid[pos_i + 1, pos_j] != None:
+        if pos_i + 1 < self.dim and self.grid[pos_i + 1, pos_j] is not None:
             adjacents.append(self.grid[pos_i + 1, pos_j])
-        if pos_j + 1 < self.dim and self.grid[pos_i, pos_j + 1] != None:
+        if pos_j + 1 < self.dim and self.grid[pos_i, pos_j + 1] is not None:
             adjacents.append(self.grid[pos_i, pos_j + 1])
-        if pos_i - 1 > 0 and self.grid[pos_i - 1, pos_j] != None:
+        if pos_i - 1 > 0 and self.grid[pos_i - 1, pos_j] is not None:
             adjacents.append(self.grid[pos_i - 1, pos_j])
-        if pos_j - 1 > 0 and self.grid[pos_i, pos_j - 1] != None:
+        if pos_j - 1 > 0 and self.grid[pos_i, pos_j - 1] is not None:
             adjacents.append(self.grid[pos_i, pos_j - 1])
         return adjacents
 
