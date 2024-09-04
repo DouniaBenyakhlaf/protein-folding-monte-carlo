@@ -112,18 +112,17 @@ class Lattice:
             The computed energy of the protein configuration in the lattice
         """
         energy = 0
-        for i in range(self.dim - 1):
-            for j in range(i + 1, self.dim):
-                residue = self.grid[i, j]
-                if (
-                    residue != None and residue.type == "H"
-                ):  # not necessary to continue if the residue is not hydrophobic
-                    adjacents = self.get_adjacents(i, j)
-                    if len(adjacents) > 0:
-                        for neighbour in adjacents:
-                            if (
-                                not residue.is_connected(neighbour)
-                                and neighbour.type == "H"
-                            ):
-                                energy -= 1
+        for i in range(1, self.protein.length):
+            residue1 = self.protein.get_residue(i)
+            # not necessary to continue if the residue is not hydrophobic
+            if residue1.type == "H":
+                for j in range(i + 1, self.protein.length + 1):
+                    residue2 = self.protein.get_residue(j)
+                    # not necessary to continue if the neighbour is not hydrophobic
+                    if (
+                        residue2.type == "H"
+                        and not residue1.is_connected(residue2)
+                        and residue1.is_adjacent(residue2)
+                    ):
+                        energy -= 1
         return energy
