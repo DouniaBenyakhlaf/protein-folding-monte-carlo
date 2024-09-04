@@ -16,7 +16,7 @@ class Lattice:
         The protein contained within the lattice.
     """
 
-    def __init__(self, protein):
+    def __init__(self, protein, grid=None):
         """
         Initialize a Lattice instance with a protein.
 
@@ -28,16 +28,18 @@ class Lattice:
         self.protein = protein
         self.dim = protein.length
         if grid is None:
-        self.grid = np.empty((self.dim, self.dim), dtype=object)
-        self.grid[:] = None
-        # The protein is initially unfolded and placed horizontally in the lattice
-        i = self.dim // 2  # the middle of the lattice
-        for j in range(self.dim):
-            residue = self.protein.get_residue(
-                j + 1
-            )  # addition +1 because the aa numbers begins with 1
-            residue.x_coord, residue.y_coord = j, i
-            self.grid[i, j] = residue
+            self.grid = np.empty((self.dim, self.dim), dtype=object)
+            self.grid[:] = None
+            # The protein is initially unfolded and placed horizontally in the lattice
+            i = self.dim // 2  # the middle of the lattice
+            for j in range(self.dim):
+                residue = self.protein.get_residue(
+                    j + 1
+                )  # addition +1 because the aa numbers begins with 1
+                residue.i_coord, residue.j_coord = i, j
+                self.grid[i, j] = residue
+        else:
+            self.grid = grid  # in order to test some conformation (energy function etc). Remove this part later.
 
     def __str__(self):
         """
@@ -58,7 +60,7 @@ class Lattice:
                     line += "    |"
                 else:
                     line += residue.type
-                    line += str(residue.number)
+                    line += f"{residue.number:< 3d}"
                     line += "|"
             line += "\n"
             description += line

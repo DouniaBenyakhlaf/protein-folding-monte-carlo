@@ -1,3 +1,5 @@
+import numpy as np
+
 # from residue import * # already imported in protein class
 from protein import *
 from lattice import *
@@ -25,3 +27,36 @@ if __name__ == "__main__":
     lattice_1 = Lattice(protein_1)
     print(lattice_1)
     print(lattice_1.compute_energy())
+
+    print("--------test of energy function--------")
+    residues = [
+        Residue("P", 1, 2, 2),
+        Residue("P", 2, 1, 2),
+        Residue("P", 3, 1, 3),
+        Residue("H", 4, 2, 3),
+        Residue("H", 5, 2, 4),
+        Residue("P", 6, 1, 4),
+        Residue("P", 7, 1, 5),
+        Residue("P", 8, 2, 5),
+        Residue("P", 9, 3, 5),
+        Residue("P", 10, 4, 5),
+        Residue("P", 11, 4, 4),
+        Residue("H", 12, 3, 4),
+        Residue("H", 13, 3, 3),
+        Residue("P", 14, 4, 3),
+        Residue("P", 15, 4, 2),
+        Residue("P", 16, 3, 2),
+    ]
+
+    grid = np.empty((16, 16), dtype=object)
+    grid[:] = None
+    for residue in residues:
+        grid[residue.i_coord, residue.j_coord] = residue
+
+    protein_2 = Protein("SSSGGSSSSSSGGSSS")
+    for i in range(protein_2.length):
+        protein_2.hp_sequence[i] = residues[i]
+
+    lattice_2 = Lattice(protein_2, grid)  # sequence "PPPHHPPPPPPHHPPP"
+    print(lattice_2)
+    print(lattice_2.compute_energy())
