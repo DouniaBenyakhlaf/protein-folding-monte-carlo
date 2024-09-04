@@ -31,8 +31,10 @@ class Lattice:
         self.grid[:] = None
         # The protein is initially unfolded and placed horizontally in the lattice
         i = self.dim // 2  # the middle of the lattice
-        for j in range(1, self.dim - 1):
-            residue = self.protein.get_residue(j)
+        for j in range(self.dim):
+            residue = self.protein.get_residue(
+                j + 1
+            )  # addition +1 because the aa numbers begins with 1
             residue.x_coord, residue.y_coord = j, i
             self.grid[i, j] = residue
 
