@@ -27,6 +27,7 @@ if __name__ == "__main__":
     lattice_1 = Lattice(protein_1)
     print(lattice_1)
     print(lattice_1.compute_energy())
+    lattice_1.possible_endmoves()
 
     print("--------test of energy function--------")
     residues = [
@@ -60,3 +61,24 @@ if __name__ == "__main__":
     lattice_2 = Lattice(protein_2, grid)  # sequence "PPPHHPPPPPPHHPPP"
     print(lattice_2)
     print(lattice_2.compute_energy())
+    lattice_2.possible_endmoves()
+    lattice_2.possible_cornermoves(residues[4])
+
+    print("--------test of corner moves--------")
+    residues_v2 = [
+        Residue("P", 1, 1, 1),
+        Residue("P", 2, 1, 0),
+        Residue("P", 3, 2, 0),
+    ]
+    grid2 = np.empty((3, 3), dtype=object)
+    grid2[:] = None
+    for residue in residues_v2:
+        grid2[residue.i_coord, residue.j_coord] = residue
+
+    protein_3 = Protein("PPP")
+    for i in range(protein_3.length):
+        protein_3.hp_sequence[i] = residues_v2[i]
+    lattice_3 = Lattice(protein_3, grid2)
+    print(lattice_3)
+    lattice_3.possible_cornermoves(residues_v2[1])
+    lattice_3.possible_cornermoves(residues_v2[0])
