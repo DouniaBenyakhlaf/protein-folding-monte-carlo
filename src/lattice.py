@@ -66,37 +66,38 @@ class Lattice:
             description += line
         return description
 
-    def get_adjacents(self, pos_i, pos_j):
+    def get_adjacents_available_positions(self, residue):
         """
-        Retrieve the adjacent residues in the lattice.
+        Retrieve available adjacent positions in the lattice grid.
 
-        This method returns a list of residues adjacent to the given position
-        in the lattice. It checks the four possible neighboring positions
-        (up, down, left, right) and includes only the non-empty ones.
+        This method checks the positions directly adjacent to the given
+        coordinates `(pos_i, pos_j)` in the grid. It returns a list of
+        coordinates where adjacent positions are empty (i.e., `None`).
 
         Parameters
         ----------
         pos_i : int
-            The row index of the residue in the lattice.
+            The row index of the current position in the lattice.
         pos_j : int
-            The column index of the residue in the lattice.
+            The column index of the current position in the lattice.
 
         Returns
         -------
-        list
-            A list of Residue objects that are adjacent to the specified position.
-            The list will be empty if there are no adjacent residues.
+        list of tuple of (int, int)
+            A list of tuples, where each tuple represents the coordinates
+            of an adjacent position that is available (i.e., empty).
         """
-        adjacents = []
-        if pos_i + 1 < self.dim and self.grid[pos_i + 1, pos_j] is not None:
-            adjacents.append(self.grid[pos_i + 1, pos_j])
-        if pos_j + 1 < self.dim and self.grid[pos_i, pos_j + 1] is not None:
-            adjacents.append(self.grid[pos_i, pos_j + 1])
-        if pos_i - 1 > 0 and self.grid[pos_i - 1, pos_j] is not None:
-            adjacents.append(self.grid[pos_i - 1, pos_j])
-        if pos_j - 1 > 0 and self.grid[pos_i, pos_j - 1] is not None:
-            adjacents.append(self.grid[pos_i, pos_j - 1])
-        return adjacents
+        pos_i, pos_j = residue.i_coord, residue.j_coord
+        available_positions = []
+        if pos_i + 1 < self.dim and self.grid[pos_i + 1, pos_j] is None:
+            available_positions.append((pos_i + 1, pos_j))
+        if pos_j + 1 < self.dim and self.grid[pos_i, pos_j + 1] is None:
+            available_positions.append((pos_i, pos_j + 1))
+        if pos_i - 1 >= 0 and self.grid[pos_i - 1, pos_j] is None:
+            available_positions.append((pos_i - 1, pos_j))
+        if pos_j - 1 >= 0 and self.grid[pos_i, pos_j - 1] is None:
+            available_positions.append((pos_i, pos_j - 1))
+        return available_positions
 
     def compute_energy(self):
         """
@@ -129,3 +130,42 @@ class Lattice:
                     ):
                         energy -= 1
         return energy
+
+    def possible_endmoves(self):
+        first_neighbour = self.protein.get_residue(2)
+        last_neighbour = self.protein.get_residue(self.protein.length - 1)
+        first_available_positions = self.get_adjacents_available_positions(
+            first_neighbour
+        )
+        last_available_positions = self.get_adjacents_available_positions(
+            last_neighbour
+        )
+        if len(first_available_positions) > 0:
+            print(
+                f"Available positions for the first residue : {first_available_positions}"
+            )
+        if len(last_available_positions) > 0:
+            print(
+                f"Available positions for the last residue : {last_available_positions}"
+            )
+
+    def possible_cornermoves(self, residue):
+        if residue.number != self.protein.length and residue.number != 1:
+            connected_neighbour_1 = self.protein.get_residue(
+                (residue.number + 1)
+            )
+            connected_neighbour_2 = self.protein.get_residue(
+                (residue.number - 1)
+            )
+            avail_pos_neighbour_1 = set(
+                self.get_adjacents_available_positions(connected_neighbour_1)
+            )
+            avail_pos_neighbour_2 = set(
+                self.get_adjacents_available_positions(connected_neighbour_2)
+            )
+            cornermove = list(
+                avail_pos_neighbour_1.intersection(avail_pos_neighbour_2)
+            )
+            print(f"available cornermove position: {cornermove}")
+        else:
+            print("corner moves are not possible on end residues")
