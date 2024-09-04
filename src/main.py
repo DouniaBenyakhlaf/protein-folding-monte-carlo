@@ -9,19 +9,19 @@ if __name__ == "__main__":
     arginine = Residue("P", 3, 4, 7)
     glycine = Residue("H", 2, 4, 8)
     alanine = Residue("H", 52, 10, 8)
-    arginine.res_description()
-    glycine.res_description()
-    alanine.res_description()
+    print(arginine)
+    print(glycine)
+    print(alanine)
     print(arginine.is_connected(glycine))
     print(arginine.is_connected(alanine))
 
     # =================== Test of Protein class ===================
     print("=================== Test of Protein class ===================")
     protein_1 = Protein("HHPHPP")
-    protein_1.print_sequence()
+    print(protein_1)
 
     # =================== Test of Lattice class ===================
     print("=================== Test of Lattice class ===================")
     lattice_1 = Lattice(protein_1)
-    lattice_1.print_lattice()
+    print(lattice_1)
     print(lattice_1.compute_energy())

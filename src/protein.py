@@ -36,13 +36,20 @@ class Protein:
         self.first_residue = self.sequence[0]
         self.last_residue = self.sequence[-1]
 
-    def print_sequence(self):
+    def __str__(self):
         """
-        Prints a description the protein and each residue of the protein sequence.
+        Return a string representation of the protein.
+
+        Returns
+        -------
+        str
+            A formatted string describing the protein, including its length and
+            the sequence of residues with their types and numbers.
         """
-        print(f"Protein length = {self.length}")
+        description = f"Protein length = {self.length}\nSequence : "
         for residue in self.sequence:
-            residue.res_description()
+            description += f"{residue.type}{residue.number} "
+        return description
 
     def get_residue(self, residue_number):
         """

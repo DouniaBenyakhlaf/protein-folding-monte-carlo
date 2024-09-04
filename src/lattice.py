@@ -36,11 +36,17 @@ class Lattice:
             residue.x_coord, residue.y_coord = j, i
             self.grid[i, j] = residue
 
-    def print_lattice(self):
+    def __str__(self):
         """
-        Print a visual representation of the lattice grid.
+        Return a string representation of the lattice grid.
+
+        Returns
+        -------
+        str
+            A formatted string depicting the lattice grid, with residues shown
+            by their type and number, and empty cells represented by spaces.
         """
-        # Rewrite all the print as seen in script course
+        description = ""
         for i in range(self.dim):
             line = "|"
             for j in range(self.dim):
@@ -51,7 +57,9 @@ class Lattice:
                     line += residue.type
                     line += str(residue.number)
                     line += "|"
-            print(line)
+            line += "\n"
+            description += line
+        return description
 
     def get_adjacents(self, pos_i, pos_j):
         """

@@ -36,14 +36,17 @@ class Residue:
         self.x_coord = x_coord
         self.y_coord = y_coord
 
-    def res_description(self):
+    def __str__(self):
         """
-        Prints a description of the residue, including its name, number, type,
-        and position in the lattice.
+        Return a string representation of the residue.
+
+        Returns
+        -------
+        str
+            A formatted string describing the residue, including its type, number,
+            and lattice position.
         """
-        print(
-            f"The residue {self.type}{self.number} is in position ({self.x_coord},{self.y_coord}) in the lattice."
-        )
+        return f"The residue {self.type}{self.number} is in position ({self.x_coord},{self.y_coord}) in the lattice."
 
     def is_connected(self, res):
         """
