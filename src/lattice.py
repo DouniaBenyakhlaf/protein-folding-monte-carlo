@@ -28,18 +28,25 @@ class Lattice:
         self.protein = protein
         self.dim = protein.length
         if grid is None:
+            self.dim = protein.length * 4  # dimension of the lattice
+            print(self.dim)
             self.grid = np.empty((self.dim, self.dim), dtype=object)
             self.grid[:] = None
             # The protein is initially unfolded and placed horizontally in the lattice
             i = self.dim // 2  # the middle of the lattice
-            for j in range(self.dim):
+            j = self.dim // 2
+            protein_position = 0
+            while protein_position < self.protein.length:
                 residue = self.protein.get_residue(
-                    j + 1
+                    protein_position + 1
                 )  # addition +1 because the aa numbers begins with 1
                 residue.i_coord, residue.j_coord = i, j
                 self.grid[i, j] = residue
+                protein_position += 1
+                j += 1
         else:
             self.grid = grid  # in order to test some conformation (energy function etc). Remove this part later.
+            self.dim = grid.shape[0]
 
     def __str__(self):
         """
