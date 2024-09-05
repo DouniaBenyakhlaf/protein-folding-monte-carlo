@@ -73,6 +73,31 @@ class Lattice:
             description += line
         return description
 
+    def verify_dim(self, position):
+        """
+        Check if a position is within the bounds of the grid dimensions.
+
+        This method verifies whether the given position is within the valid range of the grid dimensions.
+        Specifically, it checks if both the x and y coordinates of the position are greater than 0 and less
+        than the grid's dimension size.
+
+        Parameters
+        ----------
+        position : tuple of int
+            A tuple (x, y) representing the coordinates of the position to be checked.
+
+        Returns
+        -------
+        bool
+            True if the position is within the grid boundaries, otherwise False.
+        """
+        return (
+            position[0] > 0
+            and position[0] < self.dim
+            and position[1] > 0
+            and position[1] < self.dim
+        )
+
     def get_adjacents_available_positions(self, residue):
         """
         Retrieve available adjacent positions in the lattice grid.
