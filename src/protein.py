@@ -93,3 +93,45 @@ class Protein:
             The Residue object at the specified position in the sequence.
         """
         return self.hp_sequence[residue_number - 1]
+
+    def is_residue_in_ushaped_bend(self, residue, is_first_corner):
+        """
+        Check if a residue is part of a U-shaped bend in the chain.
+
+        This method determines whether the given residue is part of a U-shaped bend by checking the
+        adjacency of other residues. Depending on the value of `is_first_corner`, it either checks
+        the adjacency between residue i-1 and i+2 or between residue i-2 and i+1.
+
+        Parameters
+        ----------
+        residue : Residue
+            The residue to be checked for being part of a U-shaped bend.
+        is_first_corner : bool
+            If True, checks if residue i-1 and i+2 are adjacent. If False, checks if residue i-2
+            and i+1 are adjacent.
+
+        Returns
+        -------
+        bool
+            True if the residue is part of a U-shaped bend, otherwise False.
+        """
+        if is_first_corner:
+            # residue i is part of a u-shaped bend in the chain if residue i-1 and i+2 are adjacents
+            if (residue.number - 1) >= 1 and (
+                residue.number + 2
+            ) < self.length:
+                return self.get_residue(residue.number - 1).is_adjacent(
+                    self.get_residue(residue.number + 2)
+                )
+            else:
+                return False
+        else:
+            # residue i is part of a u-shaped bend in the chain if residue i-2 and i+1 are adjacents
+            if (residue.number - 2) >= 1 and (
+                residue.number + 1
+            ) < self.length:
+                return self.get_residue(residue.number - 2).is_adjacent(
+                    self.get_residue(residue.number + 1)
+                )
+            else:
+                return False
