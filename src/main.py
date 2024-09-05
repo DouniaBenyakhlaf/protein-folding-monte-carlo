@@ -49,7 +49,7 @@ if __name__ == "__main__":
         Residue("P", 16, 3, 2),
     ]
 
-    grid = np.empty((16, 16), dtype=object)
+    grid = np.empty((16 * 2, 16 * 2), dtype=object)
     grid[:] = None
     for residue in residues:
         grid[residue.i_coord, residue.j_coord] = residue
