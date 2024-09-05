@@ -90,3 +90,26 @@ class Residue:
             abs(self.j_coord - residue2.j_coord) == 1
             and self.i_coord == residue2.i_coord
         )
+
+    def get_symetrical_position(self, residue):
+        """
+        Calculate the symmetrical position of the current residue with respect to another residue.
+
+        This method computes the symmetrical position of the current residue (self) relative to
+        another residue. The symmetry is calculated in a 2D grid, based on the coordinates of the
+        given residue.
+
+        Parameters
+        ----------
+        residue : Residue
+            The residue with respect to which the symmetrical position is calculated.
+
+        Returns
+        -------
+        tuple of int
+            A tuple (x, y) representing the symmetrical position of the current residue in the grid.
+        """
+        return (
+            2 * residue.i_coord - self.i_coord,
+            2 * residue.j_coord - self.j_coord,
+        )
