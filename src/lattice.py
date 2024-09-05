@@ -26,7 +26,6 @@ class Lattice:
             The protein that will be contained within the lattice.
         """
         self.protein = protein
-        self.dim = protein.length
         if grid is None:
             self.dim = protein.length * 4  # dimension of the lattice
             print(self.dim)
@@ -201,3 +200,69 @@ class Lattice:
             print(f"available cornermove position: {cornermove}")
         else:
             print("corner moves are not possible on end residues")
+
+    def crankshaft_first_corner(self, residue):
+        if self.protein.is_residue_in_ushaped_bend(residue, True):
+            if (residue.number - 1) >= 1 and (
+                residue.number + 2
+            ) < self.protein.length:
+                res_i_minus_1 = self.protein.get_residue(residue.number - 1)
+                res_i_plus_1 = self.protein.get_residue(residue.number + 1)
+                res_i_plus_2 = self.protein.get_residue(residue.number + 2)
+                sym_pos_i = residue.get_symetrical_position(res_i_minus_1)
+                sym_pos_i_plus_1 = res_i_plus_1.get_symetrical_position(
+                    res_i_plus_2
+                )
+                if (
+                    self.verify_dim(sym_pos_i)
+                    and self.grid[sym_pos_i[0], sym_pos_i[1]] is None
+                ) and (
+                    self.verify_dim(sym_pos_i_plus_1)
+                    and self.grid[sym_pos_i_plus_1[0], sym_pos_i_plus_1[1]]
+                    is None
+                ):
+                    print(
+                        f"The position {sym_pos_i} is available for the residue {residue.number}"
+                    )
+                    print(
+                        f"The position {sym_pos_i_plus_1} is available for the residue {residue.number + 1}"
+                    )
+                    return True
+        return False
+
+    def crankshaft_second_corner(self, residue):
+        if self.protein.is_residue_in_ushaped_bend(residue, False):
+            if (residue.number - 2) >= 1 and (
+                residue.number + 1
+            ) < self.protein.length:
+                res_i_minus_2 = self.protein.get_residue(residue.number - 2)
+                res_i_minus_1 = self.protein.get_residue(residue.number - 1)
+                res_i_plus_1 = self.protein.get_residue(residue.number + 1)
+                sym_pos_i = residue.get_symetrical_position(res_i_plus_1)
+                sym_pos_i_minus_1 = res_i_minus_1.get_symetrical_position(
+                    res_i_minus_2
+                )
+                if (
+                    self.verify_dim(sym_pos_i)
+                    and self.grid[sym_pos_i[0], sym_pos_i[1]] is None
+                ) and (
+                    self.verify_dim(sym_pos_i_minus_1)
+                    and self.grid[sym_pos_i_minus_1[0], sym_pos_i_minus_1[1]]
+                    is None
+                ):
+                    print(
+                        f"The position {sym_pos_i} is available for the residue {residue.number}"
+                    )
+                    print(
+                        f"The position {sym_pos_i_minus_1} is available for the residue {residue.number-1}"
+                    )
+                    return True
+        return False
+
+    def possible_crankshaftmoves(self, residue):
+        if self.crankshaft_first_corner(
+            residue
+        ) or self.crankshaft_second_corner(residue):
+            print("Possible")
+        else:
+            print("Not possible")
