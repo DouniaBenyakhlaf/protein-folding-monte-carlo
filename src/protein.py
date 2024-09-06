@@ -94,47 +94,43 @@ class Protein:
         """
         return self.hp_sequence[residue_number - 1]
 
-    def is_residue_in_ushaped_bend(self, residue, is_first_corner):
+    def is_residue_in_ushaped_bend(self, residue):
         """
         Check if a residue is part of a U-shaped bend in the chain.
 
-        This method determines whether the given residue is part of a U-shaped bend by checking the
-        adjacency of other residues. Depending on the value of `is_first_corner`, it either checks
-        the adjacency between residue i-1 and i+2 or between residue i-2 and i+1.
+        This method determines whether the given residue is part of a U-shaped bend by checking
+        the adjacency of other residues in the chain. The method verifies if the residue is in
+        either the first or the second corner of a U-shaped bend based on the adjacency conditions.
 
         Parameters
         ----------
         residue : Residue
             The residue to be checked for being part of a U-shaped bend.
-        is_first_corner : bool
-            If True, checks if residue i-1 and i+2 are adjacent. If False, checks if residue i-2
-            and i+1 are adjacent.
 
         Returns
         -------
-        bool
-            True if the residue is part of a U-shaped bend, otherwise False.
+        tuple of (bool, int)
+            A tuple where the first element is a boolean indicating if the residue is part of a
+            U-shaped bend, and the second element is an integer indicating the corner type:
+            - 1 for the first corner
+            - 2 for the second corner
+            - 0 if the residue is not part of a U-shaped bend.
         """
-        if is_first_corner:
-            # residue i is part of a u-shaped bend in the chain if residue i-1 and i+2 are adjacents
-            if (residue.number - 1) >= 1 and (
-                residue.number + 2
-            ) < self.length:
-                return self.get_residue(residue.number - 1).is_adjacent(
-                    self.get_residue(residue.number + 2)
-                )
-            else:
-                return False
-        else:
-            # residue i is part of a u-shaped bend in the chain if residue i-2 and i+1 are adjacents
-            if (residue.number - 2) >= 1 and (
-                residue.number + 1
-            ) < self.length:
-                return self.get_residue(residue.number - 2).is_adjacent(
-                    self.get_residue(residue.number + 1)
-                )
-            else:
-                return False
+        # residue i is part of a u-shaped bend in the chain if residue i-1 and i+2 are adjacents
+        # (first corner)
+        if (residue.number - 1) >= 1 and (residue.number + 2) < self.length:
+            res_minus_1 = self.get_residue(residue.number - 1)
+            res_plus_2 = self.get_residue(residue.number + 2)
+            if res_minus_1.is_adjacent(res_plus_2):
+                return (True, 1)
+        # residue i is part of a u-shaped bend in the chain if residue i-2 and i+1 are adjacents
+        # (second corner)
+        if (residue.number - 2) >= 1 and (residue.number + 1) < self.length:
+            res_minus_2 = self.get_residue(residue.number - 2)
+            res_plus_1 = self.get_residue(residue.number + 1)
+            if res_minus_2.is_adjacent(res_plus_1):
+                return (True, 2)
+        return (False, 0)
 
     def is_sequence_valid(self):
         """
