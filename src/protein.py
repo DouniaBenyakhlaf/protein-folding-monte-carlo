@@ -135,3 +135,20 @@ class Protein:
                 )
             else:
                 return False
+
+    def is_sequence_valid(self):
+        """
+        Check if the HP sequence is valid based on adjacency of consecutive residues.
+
+        This method verifies if each consecutive pair of residues in the HP sequence is adjacent.
+        The sequence is considered valid if every residue is adjacent to the next one in the sequence.
+
+        Returns
+        -------
+        bool
+            True if all consecutive residues in the sequence are adjacent, otherwise False.
+        """
+        for i in range(self.length - 1):
+            if not (self.hp_sequence[i].is_adjacent(self.hp_sequence[i + 1])):
+                return False
+        return True
