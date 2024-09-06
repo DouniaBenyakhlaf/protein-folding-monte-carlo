@@ -205,7 +205,7 @@ class Lattice:
         if self.protein.is_residue_in_ushaped_bend(residue, True):
             if (residue.number - 1) >= 1 and (
                 residue.number + 2
-            ) < self.protein.length:
+            ) <= self.protein.length:
                 res_i_minus_1 = self.protein.get_residue(residue.number - 1)
                 res_i_plus_1 = self.protein.get_residue(residue.number + 1)
                 res_i_plus_2 = self.protein.get_residue(residue.number + 2)
@@ -234,7 +234,7 @@ class Lattice:
         if self.protein.is_residue_in_ushaped_bend(residue, False):
             if (residue.number - 2) >= 1 and (
                 residue.number + 1
-            ) < self.protein.length:
+            ) <= self.protein.length:
                 res_i_minus_2 = self.protein.get_residue(residue.number - 2)
                 res_i_minus_1 = self.protein.get_residue(residue.number - 1)
                 res_i_plus_1 = self.protein.get_residue(residue.number + 1)
