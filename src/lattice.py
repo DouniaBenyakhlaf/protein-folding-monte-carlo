@@ -28,7 +28,6 @@ class Lattice:
         self.protein = protein
         if grid is None:
             self.dim = protein.length * 4  # dimension of the lattice
-            print(self.dim)
             self.grid = np.empty((self.dim, self.dim), dtype=object)
             self.grid[:] = None
             # The protein is initially unfolded and placed horizontally in the lattice
