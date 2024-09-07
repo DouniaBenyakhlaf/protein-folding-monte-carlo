@@ -448,3 +448,53 @@ class Lattice:
                 (new_coordinate_i, new_coordinate_j),
             )
             current_number_residu -= 1
+
+    @staticmethod
+    def is_adjacent_position(pos1, pos2):
+        """
+        Check if two positions are adjacent on the grid.
+
+        This method determines if two positions pos1 and pos2 are adjacent
+        on the grid, meaning they share either the same row or column and are
+        only one unit apart.
+
+        Parameters
+        ----------
+        pos1 : tuple of int
+            The (i, j) coordinates of the first position on the grid.
+        pos2 : tuple of int
+            The (i, j) coordinates of the second position on the grid.
+
+        Returns
+        -------
+        bool
+            True if the positions are adjacent (either horizontally or vertically),
+            False otherwise.
+        """
+        return (abs(pos1[0] - pos2[0]) == 1 and pos1[1] == pos2[1]) or (
+            abs(pos1[1] - pos2[1]) == 1 and pos1[0] == pos2[0]
+        )
+
+    @staticmethod
+    def is_diagonal_position(pos1, pos2):
+        """
+        Check if two positions are diagonally adjacent on the grid.
+
+        This method determines if two positions pos1 and pos2 are diagonally
+        adjacent on the grid, meaning they differ by one unit both horizontally
+        and vertically.
+
+        Parameters
+        ----------
+        pos1 : tuple of int
+            The (i, j) coordinates of the first position on the grid.
+        pos2 : tuple of int
+            The (i, j) coordinates of the second position on the grid.
+
+        Returns
+        -------
+        bool
+            True if the positions are diagonally adjacent, False otherwise.
+        """
+        return abs(pos1[0] - pos2[0]) == 1 and abs(pos1[1] - pos2[1]) == 1
+
