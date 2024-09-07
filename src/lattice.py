@@ -130,6 +130,32 @@ class Lattice:
             available_positions.append((pos_i, pos_j - 1))
         return available_positions
 
+    def copy(self):
+        """
+        Create a copy of the current lattice and its associated protein.
+
+        This method creates a deep copy of the protein and lattice. It initializes a new protein
+        object with the same amino acid sequence and then replicates the positions of each residue
+        in the grid. The residues from the original protein are removed from the grid in the new lattice,
+        and their coordinates are reassigned to match the original positions. Finally, the residues are
+        placed in the appropriate locations on the new lattice grid.
+
+        Returns
+        -------
+        Lattice
+            A new Lattice object that is a copy of the current one with the protein residues
+            positioned in the same way as in the original lattice.
+        """
+        new_protein = Protein(self.protein.aa_sequence)
+        new_lattice = Lattice(new_protein)
+        for i in range(self.protein.length):
+            residue = self.protein.hp_sequence[i]
+            new_residue = new_protein.hp_sequence[i]
+            new_lattice.move_residue(
+                new_residue, (residue.i_coord, residue.j_coord)
+            )
+        return new_lattice
+
     def compute_energy(self):
         """
         Compute the energy of the protein configuration in the lattice.
