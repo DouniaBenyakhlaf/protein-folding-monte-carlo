@@ -130,6 +130,29 @@ class Lattice:
             available_positions.append((pos_i, pos_j - 1))
         return available_positions
 
+    def move_residue(self, residue, new_position):
+        """
+        Move a residue to a new position on the grid.
+
+        This method updates the grid by removing the residue from its current
+        position and placing it at the new coordinates specified. It also
+        updates the `i_coord` and `j_coord` attributes of the `residue`
+        to reflect its new position.
+
+        Parameters
+        ----------
+        residue : Residue
+            The residue object to be repositioned. It must have i_coord and
+            j_coord attributes that represent its current coordinates in the grid.
+        new_position : tuple of int
+            A tuple (i, j) representing the new coordinates on the grid where
+            the residue will be placed.
+        """
+        self.grid[residue.i_coord, residue.j_coord] = None
+        residue.i_coord = new_position[0]
+        residue.j_coord = new_position[1]
+        self.grid[new_position[0], new_position[1]] = residue
+
     def copy(self):
         """
         Create a copy of the current lattice and its associated protein.
