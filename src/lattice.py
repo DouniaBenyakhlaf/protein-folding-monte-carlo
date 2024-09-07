@@ -411,71 +411,40 @@ class Lattice:
         else:
             return self.crankshaft_second_corner(residue)
 
-    # Essayer de simplifier cette fonction
-    def possible_pullmoves(self, residue):
-        # 1) recuperer L qui est adjacent a i+1 et diagonalement adjacent a i (verifier que i-1 existe)
-        if residue.number + 1 <= self.protein.length:
-            print("pas dernier residue")
-            residu_plus_1 = self.protein.get_residue(residue.number + 1)
-            adj_res_plus_1 = self.get_adjacents_available_positions(
-                residu_plus_1
+    def successive_pulls(self, new_lattice, number_residue):
+        """
+        Perform a series of successive pull moves on the lattice.
+
+        This method applies successive pull moves to adjust the positions of residues
+        in the lattice to ensure that the sequence of residues becomes valid. It starts
+        from the residue with a number number_residue - 2 and attempts to reposition
+        each residue in sequence by moving it to the position of the residue two places
+        ahead in the original lattice. This process continues until the sequence is valid
+        or all residues from the starting point down to residue 1 have been adjusted.
+
+        Parameters
+        ----------
+        new_lattice : Lattice
+            The lattice object where residues will be moved. This lattice is modified
+            during the process to reflect the new positions of the residues.
+        number_residue : int
+            The starting residue number for the successive pulls. The function will
+            start moving residues from number_residue - 2 down to residue 1.
+        """
+        current_number_residu = number_residue - 2
+        while (
+            current_number_residu >= 1
+            and not new_lattice.protein.is_sequence_valid()
+        ):
+            # ne rentre jamais ici car il faut appliquer les modifications cette fois-ci... Les étapes precedentes ont l'air de fonctionner
+            new_coordinate_i = self.protein.get_residue(
+                current_number_residu + 2
+            ).i_coord
+            new_coordinate_j = self.protein.get_residue(
+                current_number_residu + 2
+            ).j_coord
+            new_lattice.move_residue(
+                current_number_residu,
+                (new_coordinate_i, new_coordinate_j),
             )
-            print(adj_res_plus_1)
-            position_l = None
-            position_c = None
-            for elem in adj_res_plus_1:
-                if (
-                    abs(residue.i_coord - elem[0]) == 1
-                    and abs(residue.j_coord - elem[1]) == 1
-                ):
-                    position_l = elem
-                    break
-            if position_l is not None:
-                print("il existe une position L")
-                # 2) recuperer C qui est adjacent à i et L
-                # je n'implémente pas le cas ou C est occupe par i-1 car revient au corner moves
-                # si je change d'avis il faut juste verifier si le residu i-1 est adjacent a L
-                adj_res = self.get_adjacents_available_positions(residue)
-                for elem in adj_res:
-                    if (
-                        abs(elem[0] - position_l[0]) == 1
-                        and elem[1] == position_l[1]
-                    ) or (
-                        abs(elem[1] - position_l[1]) == 1
-                        and elem[0] == position_l[0]
-                    ):
-                        position_c = elem
-                        break
-            # On peut faire le pull moves
-            if position_c is not None:
-                print("Il existe une position C")
-                if residue.number == 1:
-                    print("pas de i-1")
-                    print(
-                        f"New position of res {residue.number} = {position_l}\n"
-                    )
-                else:
-                    # 3) si C et L sont accessible on peut faire le pull moves
-                    # 4) si oui alors si C est occupe par le residu i-1, il faut juste bouger i dans L (= corner move)
-                    # 5) si C pas occupe pas i-1, il faut bouger i dans L et i-1 dans C
-                    # 6) si sequence pas valide alors tant que pas valide ou on atteint le premier residu on bouge res tmp a la position du res+2. On commence par res-2.
-                    print(
-                        f"New position of res {residue.number} = {position_l}\nNew position of res {residue.number - 1} = {position_c}"
-                    )
-                    current_number_residu = residue.number - 2
-                    while (
-                        current_number_residu >= 1
-                        and not self.protein.is_sequence_valid()
-                    ):
-                        # ne rentre jamais ici car il faut appliquer les modifications cette fois-ci... Les étapes precedentes ont l'air de fonctionner
-                        print("sequence pas correcte")
-                        new_coordinate_i = self.protein.get_residue(
-                            current_number_residu + 2
-                        ).i_coord
-                        new_coordinate_j = self.protein.get_residue(
-                            current_number_residu + 2
-                        ).j_coord
-                        print(
-                            f"New position of res {residue.number - current_number_residu} = {(new_coordinate_i, new_coordinate_j)}\n"
-                        )
-                        current_number_residu -= 1
+            current_number_residu -= 1
