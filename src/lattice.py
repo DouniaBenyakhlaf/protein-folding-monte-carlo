@@ -1,5 +1,6 @@
 """Module for handling lattice."""
 
+import random
 import numpy as np
 from protein import Protein
 
@@ -636,3 +637,25 @@ class Lattice:
                 self.successive_pulls(new_lattice, residue.number)
                 return new_lattice
         return None
+
+    def random_move(self):
+        """
+        Select a random movement function from a list of possible moves.
+
+        This method randomly selects one movement strategy from a list of
+        available moves, which includes end moves, corner moves, crankshaft
+        moves, and pull moves. The chosen move can then be executed on
+        the lattice.
+
+        Returns
+        -------
+        function
+            A function reference representing one of the movement strategies.
+        """
+        moves = [
+            self.end_moves,
+            self.corner_moves,
+            self.crankshaft_moves,
+            self.pull_moves,
+        ]
+        return random.choice(moves)
