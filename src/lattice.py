@@ -559,3 +559,50 @@ class Lattice:
                 position_c = elem
                 break
         return position_c
+
+    def pull_moves(self, residue):
+        """
+        Attempt to perform a pull move on the given residue.
+
+        This method attempts to perform a pull move by shifting the residue i to an adjacent
+        position L and its preceding residue i-1 (if applicable) to a new position C
+        adjacent to both i and L.
+
+        The pull move involves the following steps:
+        1. Retrieve position L, which is adjacent to i+1 and diagonally adjacent to i.
+        The check ensures that residue i+1 exists in the protein sequence.
+        2. If L is available, retrieve position C, which is adjacent to both i and L.
+        The case where C is occupied by i-1 (the preceding residue) is not implemented,
+        as it falls under a corner move case.
+        3. If both C and L are accessible, perform the pull move by moving residue i to L.
+        If residue i is the first one in the sequence, return the new lattice.
+        4. If C is not occupied by i-1, move i to L and i-1 to C.
+        5. If the sequence is invalid after the move, attempt successive pull moves on preceding
+        residues until a valid sequence is obtained or the first residue is reached.
+
+        Parameters
+        ----------
+        residue : Residue
+            The residue object to be repositioned.
+
+        Returns
+        -------
+        new_lattice : Lattice or None
+            A new lattice configuration if a valid pull move is performed, or None if the move
+            cannot be made.
+        """
+        if residue.number + 1 <= self.protein.length:
+            position_l = self.get_position_l(residue)
+            position_c = None
+            if position_l is not None:
+                position_c = self.get_position_c(residue, position_l)
+            if position_c is not None:
+                new_lattice = self.copy()
+                new_lattice.move_residue(residue.number, position_l)
+                if residue.number == 1:
+                    return new_lattice
+                else:
+                    new_lattice.move_residue(residue.number - 1, position_c)
+                    self.successive_pulls(new_lattice, residue.number)
+                    return new_lattice
+        return None
