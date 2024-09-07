@@ -250,6 +250,27 @@ class Lattice:
             return new_lattice
         return None
 
+    def corner_moves(self, residue):
+        """
+        Attempt to reposition a non-terminal residue to a corner move, if available.
+
+        This method checks if the given residue is not a terminal one (i.e., neither the
+        first nor the last in the protein sequence). If the residue is connected to two
+        neighbors, the method identifies common available positions adjacent to both
+        neighbors. If a corner move is found, the function returns a new lattice with
+        the residue repositioned to the first available corner move.
+
+        Parameters
+        ----------
+        residue : Residue
+            The residue to check.
+
+        Returns
+        -------
+        new_lattice : Lattice or None
+            A new lattice with the residue moved to the first available corner position,
+            or None if no corner move is possible or the residue is terminal.
+        """
         if residue.number != self.protein.length and residue.number != 1:
             connected_neighbour_1 = self.protein.get_residue(
                 (residue.number + 1)
@@ -266,9 +287,12 @@ class Lattice:
             cornermove = list(
                 avail_pos_neighbour_1.intersection(avail_pos_neighbour_2)
             )
-            print(f"available cornermove position: {cornermove}")
-        else:
-            print("corner moves are not possible on end residues")
+            if len(cornermove) > 0:
+                new_lattice = self.copy()
+                new_res = new_lattice.grid[residue.i_coord, residue.j_coord]
+                new_lattice.move_residue(new_res, cornermove[0])
+                return new_lattice
+        return None
 
     def crankshaft_first_corner(self, residue):
         if self.protein.is_residue_in_ushaped_bend(residue, True):
