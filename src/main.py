@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # lattice_1 = Lattice(protein_1)
     # print(lattice_1)
     # print(lattice_1.compute_energy())
-    # lattice_1.possible_endmoves()
+    # lattice_1.end_moves()
 
     # print("--------test of energy function--------")
     # residues = [
@@ -61,8 +61,8 @@ if __name__ == "__main__":
     # lattice_2 = Lattice(protein_2, grid)  # sequence "PPPHHPPPPPPHHPPP"
     # print(lattice_2)
     # print(lattice_2.compute_energy())
-    # lattice_2.possible_endmoves()
-    # lattice_2.possible_cornermoves(residues[4])
+    # print(lattice_2.end_moves(residues[0]))
+    # print(lattice_2.corner_moves(residues[4]))
 
     # print("--------test of corner moves--------")
     # residues_v2 = [
@@ -80,32 +80,33 @@ if __name__ == "__main__":
     #     protein_3.hp_sequence[i] = residues_v2[i]
     # lattice_3 = Lattice(protein_3, grid2)
     # print(lattice_3)
-    # lattice_3.possible_cornermoves(residues_v2[1])
-    # lattice_3.possible_cornermoves(residues_v2[0])
-    # lattice_3.possible_crankshaftmoves(residues_v2[1])
+    # print(lattice_3.corner_moves(residues_v2[1]))
+    # print(lattice_3.corner_moves(residues_v2[1]).corner_moves(residues_v2[1]))
+    # print(lattice_3.crankshaft_moves(residues_v2[1]))
 
-    # print("--------test of crankshaf moves--------")
-    # residues_v3 = [
-    #     Residue("P", 1, 0, 1),
-    #     Residue("P", 2, 1, 1),
-    #     Residue("P", 3, 1, 0),
-    #     Residue("P", 4, 2, 0),
-    #     Residue("P", 5, 2, 1),
-    #     Residue("P", 6, 3, 1),
-    # ]
-    # grid3 = np.empty((3 * 6, 3 * 6), dtype=object)
-    # grid3[:] = None
-    # for residue in residues_v3:
-    #     grid3[residue.i_coord, residue.j_coord] = residue
+    print("--------test of crankshaf moves--------")
+    residues_v3 = [
+        Residue("P", 1, 0, 1),
+        Residue("P", 2, 1, 1),
+        Residue("P", 3, 1, 0),
+        Residue("P", 4, 2, 0),
+        Residue("P", 5, 2, 1),
+        Residue("P", 6, 3, 1),
+    ]
+    grid3 = np.empty((3 * 6, 3 * 6), dtype=object)
+    grid3[:] = None
+    for residue in residues_v3:
+        grid3[residue.i_coord, residue.j_coord] = residue
 
-    # protein_4 = Protein("PPPPPP")
-    # for i in range(protein_4.length):
-    #     protein_4.hp_sequence[i] = residues_v3[i]
-    # lattice_4 = Lattice(protein_4, grid3)
-    # print(lattice_4)
-    # lattice_4.possible_cornermoves(residues_v3[1])
-    # lattice_4.possible_crankshaftmoves(residues_v3[2])
-    # lattice_4.possible_crankshaftmoves(residues_v3[3])
+    protein_4 = Protein("PPPPPP")
+    for i in range(protein_4.length):
+        protein_4.hp_sequence[i] = residues_v3[i]
+    lattice_4 = Lattice(protein_4, grid3)
+    print(lattice_4)
+    print(lattice_4.end_moves(residues_v3[0]))
+    print(lattice_4.corner_moves(residues_v3[1]))
+    print(lattice_4.crankshaft_moves(residues_v3[2]))
+    print(lattice_4.crankshaft_moves(residues_v3[3]))
 
     print("--------test of pull moves--------")
     # test is_valid :
@@ -117,25 +118,28 @@ if __name__ == "__main__":
     # protein_5.hp_sequence[3].i_coord = 56
     # print(protein_5.is_sequence_valid())
 
-    residues_v3 = [
-        Residue("P", 1, 3, 0),
-        Residue("P", 2, 2, 0),
-        Residue("P", 3, 1, 0),
-        Residue("P", 4, 1, 1),
-        Residue("P", 5, 0, 1),
-        Residue("P", 6, 0, 2),
-        Residue("P", 7, 1, 2),
-        Residue("P", 8, 2, 2),
-        Residue("P", 9, 3, 2),
-    ]
-    grid3 = np.empty((3 * 9, 3 * 9), dtype=object)
-    grid3[:] = None
-    for residue in residues_v3:
-        grid3[residue.i_coord, residue.j_coord] = residue
+    # residues_v3 = [
+    #     Residue("H", 1, 3, 0),
+    #     Residue("H", 2, 2, 0),
+    #     Residue("H", 3, 1, 0),
+    #     Residue("H", 4, 1, 1),
+    #     Residue("H", 5, 0, 1),
+    #     Residue("H", 6, 0, 2),
+    #     Residue("H", 7, 1, 2),
+    #     Residue("H", 8, 2, 2),
+    #     Residue("H", 9, 3, 2),
+    # ]
+    # grid3 = np.empty((3 * 9, 3 * 9), dtype=object)
+    # grid3[:] = None
+    # for residue in residues_v3:
+    #     grid3[residue.i_coord, residue.j_coord] = residue
 
-    protein_4 = Protein("PPPPPPPPP")
-    for i in range(protein_4.length):
-        protein_4.hp_sequence[i] = residues_v3[i]
-    lattice_4 = Lattice(protein_4, grid3)
-    print(lattice_4)
-    lattice_4.possible_pullmoves(residues_v3[7])
+    # protein_4 = Protein("PPPPPPPPP")
+    # for i in range(protein_4.length):
+    #     protein_4.hp_sequence[i] = residues_v3[i]
+    # lattice_4 = Lattice(protein_4, grid3)
+    # print(lattice_4)
+    # lattice_4.possible_pullmoves(residues_v3[7])
+
+    # lattice_6 = lattice_4.copy()
+    # print(lattice_6)
