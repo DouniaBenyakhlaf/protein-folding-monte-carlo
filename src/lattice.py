@@ -211,25 +211,45 @@ class Lattice:
                         energy -= 1
         return energy
 
-    def possible_endmoves(self):
-        first_neighbour = self.protein.get_residue(2)
-        last_neighbour = self.protein.get_residue(self.protein.length - 1)
-        first_available_positions = self.get_adjacents_available_positions(
-            first_neighbour
-        )
-        last_available_positions = self.get_adjacents_available_positions(
-            last_neighbour
-        )
-        if len(first_available_positions) > 0:
-            print(
-                f"Available positions for the first residue : {first_available_positions}"
-            )
-        if len(last_available_positions) > 0:
-            print(
-                f"Available positions for the last residue : {last_available_positions}"
-            )
+    def end_moves(self, residue):
+        """
+        Attempt to reposition a terminal residue based on its neighbor's available positions.
 
-    def possible_cornermoves(self, residue):
+        This method checks if the given residue is at one of the ends of the protein sequence.
+        If it is the first or last residue, the function identifies the adjacent residue and
+        retrieves its available positions on the grid. If there are available positions, it
+        creates a new lattice configuration by moving the terminal residue to the first available
+        position.
+
+        Parameters
+        ----------
+        residue : Residue
+            The residue object to be checked.
+
+        Returns
+        -------
+        new_lattice : Lattice or None
+            A new lattice configuration with the terminal residue moved to the first available
+            position, or None if the residue is not terminal or no available positions exist.
+
+        """
+        neighbour = None
+        if residue.number == 1:
+            neighbour = self.protein.get_residue(2)
+        elif residue.number == self.protein.length:
+            neighbour = self.protein.get_residue(self.protein.length - 1)
+        else:
+            return None
+        available_positions = self.get_adjacents_available_positions(neighbour)
+        if len(available_positions) > 0:
+            new_lattice = self.copy()
+            new_residue = new_lattice.grid[residue.i_coord, residue.j_coord]
+            new_lattice.move_residue(
+                new_residue, available_positions[0]
+            )  # first position by default
+            return new_lattice
+        return None
+
         if residue.number != self.protein.length and residue.number != 1:
             connected_neighbour_1 = self.protein.get_residue(
                 (residue.number + 1)
