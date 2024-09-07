@@ -529,3 +529,33 @@ class Lattice:
                 position_l = elem
                 break  # stop at the first solution
         return position_l
+
+    def get_position_c(self, residue, position_l):
+        """
+        Retrieve the position C adjacent to both the given residue and position L.
+
+        This method finds a position C on the grid that is adjacent to the current
+        position of the specified residue and the given position L. It iterates over
+        all available adjacent positions of the residue and checks if any of them are also
+        adjacent to L. Once such a position is found, it is returned.
+
+        Parameters
+        ----------
+        residue : Residue
+            The residue object for which to find an adjacent position C.
+        position_l : tuple of int
+            The coordinates (i, j) of the position L that must be adjacent to C.
+
+        Returns
+        -------
+        position_c : tuple of int or None
+            A tuple (i, j) representing the coordinates of the position C, or None if
+            no suitable position is found.
+        """
+        position_c = None
+        adj_res = self.get_adjacents_available_positions(residue)
+        for elem in adj_res:
+            if Lattice.is_adjacent_position(elem, position_l):
+                position_c = elem
+                break
+        return position_c
