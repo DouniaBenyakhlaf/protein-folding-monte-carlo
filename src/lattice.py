@@ -498,3 +498,34 @@ class Lattice:
         """
         return abs(pos1[0] - pos2[0]) == 1 and abs(pos1[1] - pos2[1]) == 1
 
+    def get_position_l(self, residue):
+        """
+        Retrieve the position L that is diagonally adjacent to the given residue  i and adjacent
+        to its neighbor i+1.
+
+        This method finds a position L on the grid that is diagonally adjacent to the given residue
+        and adjacent to its neighbor (residue i+1). It iterates over all available adjacent positions
+        of the neighbor and checks if any of them are diagonally adjacent to the current position
+        of the residue. The first valid position is returned.
+
+        Parameters
+        ----------
+        residue : Residue
+            The residue object for which to find a diagonally adjacent position L.
+
+        Returns
+        -------
+        position_l : tuple of int or None
+            A tuple (i, j) representing the coordinates of the position L, or None if no suitable
+            diagonal position is found.
+        """
+        position_l = None
+        residu_plus_1 = self.protein.get_residue(residue.number + 1)
+        adj_res_plus_1 = self.get_adjacents_available_positions(residu_plus_1)
+        for elem in adj_res_plus_1:
+            if Lattice.is_diagonal_position(
+                (residue.i_coord, residue.j_coord), elem
+            ):
+                position_l = elem
+                break  # stop at the first solution
+        return position_l
