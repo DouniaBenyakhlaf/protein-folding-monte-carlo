@@ -129,7 +129,7 @@ class Lattice:
             available_positions.append((pos_i, pos_j - 1))
         return available_positions
 
-    def move_residue(self, residue, new_position):
+    def move_residue(self, number_residue, new_position):
         """
         Move a residue to a new position on the grid.
 
@@ -140,13 +140,13 @@ class Lattice:
 
         Parameters
         ----------
-        residue : Residue
-            The residue object to be repositioned. It must have i_coord and
-            j_coord attributes that represent its current coordinates in the grid.
+        number_residue : int
+            The number of the residue to be repositioned.
         new_position : tuple of int
             A tuple (i, j) representing the new coordinates on the grid where
             the residue will be placed.
         """
+        residue = self.protein.get_residue(number_residue)
         self.grid[residue.i_coord, residue.j_coord] = None
         residue.i_coord = new_position[0]
         residue.j_coord = new_position[1]
@@ -172,9 +172,8 @@ class Lattice:
         new_lattice = Lattice(new_protein)
         for i in range(self.protein.length):
             residue = self.protein.hp_sequence[i]
-            new_residue = new_protein.hp_sequence[i]
             new_lattice.move_residue(
-                new_residue, (residue.i_coord, residue.j_coord)
+                residue.number, (residue.i_coord, residue.j_coord)
             )
         return new_lattice
 
@@ -242,9 +241,8 @@ class Lattice:
         available_positions = self.get_adjacents_available_positions(neighbour)
         if len(available_positions) > 0:
             new_lattice = self.copy()
-            new_residue = new_lattice.grid[residue.i_coord, residue.j_coord]
             new_lattice.move_residue(
-                new_residue, available_positions[0]
+                residue.number, available_positions[0]
             )  # first position by default
             return new_lattice
         return None
@@ -288,8 +286,7 @@ class Lattice:
             )
             if len(cornermove) > 0:
                 new_lattice = self.copy()
-                new_res = new_lattice.grid[residue.i_coord, residue.j_coord]
-                new_lattice.move_residue(new_res, cornermove[0])
+                new_lattice.move_residue(residue.number, cornermove[0])
                 return new_lattice
         return None
 
@@ -331,12 +328,8 @@ class Lattice:
                 and self.grid[sym_pos_i_plus_1[0], sym_pos_i_plus_1[1]] is None
             ):
                 new_lattice = self.copy()
-                new_res = new_lattice.grid[residue.i_coord, residue.j_coord]
-                new_res_plus_1 = new_lattice.grid[
-                    res_i_plus_1.i_coord, res_i_plus_1.j_coord
-                ]
-                new_lattice.move_residue(new_res, sym_pos_i)
-                new_lattice.move_residue(new_res_plus_1, sym_pos_i_plus_1)
+                new_lattice.move_residue(residue.number, sym_pos_i)
+                new_lattice.move_residue(res_i_plus_1.number, sym_pos_i_plus_1)
                 return new_lattice
         return None
 
@@ -380,12 +373,10 @@ class Lattice:
                 is None
             ):
                 new_lattice = self.copy()
-                new_res = new_lattice.grid[residue.i_coord, residue.j_coord]
-                new_res_minus_1 = new_lattice.grid[
-                    res_i_minus_1.i_coord, res_i_minus_1.j_coord
-                ]
-                new_lattice.move_residue(new_res, sym_pos_i)
-                new_lattice.move_residue(new_res_minus_1, sym_pos_i_minus_1)
+                new_lattice.move_residue(residue.number, sym_pos_i)
+                new_lattice.move_residue(
+                    res_i_minus_1.number, sym_pos_i_minus_1
+                )
                 return new_lattice
         return None
 
