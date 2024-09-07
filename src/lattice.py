@@ -156,7 +156,11 @@ class Lattice:
             the residue will be placed.
         """
         residue = self.protein.get_residue(number_residue)
-        self.grid[residue.i_coord, residue.j_coord] = None
+        if (
+            self.grid[residue.i_coord, residue.j_coord].number
+            == number_residue
+        ):
+            self.grid[residue.i_coord, residue.j_coord] = None
         residue.i_coord = new_position[0]
         residue.j_coord = new_position[1]
         self.grid[new_position[0], new_position[1]] = residue
