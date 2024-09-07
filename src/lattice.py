@@ -295,54 +295,132 @@ class Lattice:
         return None
 
     def crankshaft_first_corner(self, residue):
-        if self.protein.is_residue_in_ushaped_bend(residue, True):
-            if (residue.number - 1) >= 1 and (
-                residue.number + 2
-            ) <= self.protein.length:
-                res_i_minus_1 = self.protein.get_residue(residue.number - 1)
-                res_i_plus_1 = self.protein.get_residue(residue.number + 1)
-                res_i_plus_2 = self.protein.get_residue(residue.number + 2)
-                sym_pos_i = residue.get_symetrical_position(res_i_minus_1)
-                sym_pos_i_plus_1 = res_i_plus_1.get_symetrical_position(
-                    res_i_plus_2
-                )
-                if (
-                    self.verify_dim(sym_pos_i)
-                    and self.grid[sym_pos_i[0], sym_pos_i[1]] is None
-                ) and (
-                    self.verify_dim(sym_pos_i_plus_1)
-                    and self.grid[sym_pos_i_plus_1[0], sym_pos_i_plus_1[1]]
-                    is None
-                ):
-                    print(
-                        f"The position {sym_pos_i} is available for the residue {residue.number}"
-                    )
-                    print(
-                        f"The position {sym_pos_i_plus_1} is available for the residue {residue.number + 1}"
-                    )
-                    return True
-        return False
+        """
+        Attempt to reposition a residue (in the first corner
+        of a U-shaped bend) and its neighbor.
+
+        This method attempts to move both the residue and its adjacent neighbor
+        to their symmetrical positions on the grid. The move is only valid if
+        both new positions are within grid dimensions and unoccupied.
+
+        Parameters
+        ----------
+        residue : Residue
+            The residue object to be moved.
+
+        Returns
+        -------
+        Lattice or None
+            A new lattice configuration if the move is successful; otherwise,
+            None if the move cannot be made.
+        """
+        if (residue.number - 1) >= 1 and (
+            residue.number + 2
+        ) <= self.protein.length:
+            res_i_minus_1 = self.protein.get_residue(residue.number - 1)
+            res_i_plus_1 = self.protein.get_residue(residue.number + 1)
+            res_i_plus_2 = self.protein.get_residue(residue.number + 2)
+            sym_pos_i = residue.get_symetrical_position(res_i_minus_1)
+            sym_pos_i_plus_1 = res_i_plus_1.get_symetrical_position(
+                res_i_plus_2
+            )
+            if (
+                self.verify_dim(sym_pos_i)
+                and self.grid[sym_pos_i[0], sym_pos_i[1]] is None
+            ) and (
+                self.verify_dim(sym_pos_i_plus_1)
+                and self.grid[sym_pos_i_plus_1[0], sym_pos_i_plus_1[1]] is None
+            ):
+                new_lattice = self.copy()
+                new_res = new_lattice.grid[residue.i_coord, residue.j_coord]
+                new_res_plus_1 = new_lattice.grid[
+                    res_i_plus_1.i_coord, res_i_plus_1.j_coord
+                ]
+                new_lattice.move_residue(new_res, sym_pos_i)
+                new_lattice.move_residue(new_res_plus_1, sym_pos_i_plus_1)
+                return new_lattice
+        return None
 
     def crankshaft_second_corner(self, residue):
-        if self.protein.is_residue_in_ushaped_bend(residue, False):
-            if (residue.number - 2) >= 1 and (
-                residue.number + 1
-            ) <= self.protein.length:
-                res_i_minus_2 = self.protein.get_residue(residue.number - 2)
-                res_i_minus_1 = self.protein.get_residue(residue.number - 1)
-                res_i_plus_1 = self.protein.get_residue(residue.number + 1)
-                sym_pos_i = residue.get_symetrical_position(res_i_plus_1)
-                sym_pos_i_minus_1 = res_i_minus_1.get_symetrical_position(
-                    res_i_minus_2
-                )
-                if (
-                    self.verify_dim(sym_pos_i)
-                    and self.grid[sym_pos_i[0], sym_pos_i[1]] is None
-                ) and (
-                    self.verify_dim(sym_pos_i_minus_1)
-                    and self.grid[sym_pos_i_minus_1[0], sym_pos_i_minus_1[1]]
-                    is None
-                ):
+        """
+        Attempt to reposition a residue (in the second corner of a U-shaped bend)
+        and its neighbor.
+
+        This method attempts to move both the residue and its adjacent neighbor
+        to their symmetrical positions on the grid at the second corner of the
+        bend. The move is only valid if both new positions are within grid
+        dimensions and unoccupied.
+
+        Parameters
+        ----------
+        residue : Residue
+            The residue object to be moved.
+
+        Returns
+        -------
+        Lattice or None
+            A new lattice configuration if the move is successful; otherwise,
+            None if the move cannot be made.
+        """
+        if (residue.number - 2) >= 1 and (
+            residue.number + 1
+        ) <= self.protein.length:
+            res_i_minus_2 = self.protein.get_residue(residue.number - 2)
+            res_i_minus_1 = self.protein.get_residue(residue.number - 1)
+            res_i_plus_1 = self.protein.get_residue(residue.number + 1)
+            sym_pos_i = residue.get_symetrical_position(res_i_plus_1)
+            sym_pos_i_minus_1 = res_i_minus_1.get_symetrical_position(
+                res_i_minus_2
+            )
+            if (
+                self.verify_dim(sym_pos_i)
+                and self.grid[sym_pos_i[0], sym_pos_i[1]] is None
+            ) and (
+                self.verify_dim(sym_pos_i_minus_1)
+                and self.grid[sym_pos_i_minus_1[0], sym_pos_i_minus_1[1]]
+                is None
+            ):
+                new_lattice = self.copy()
+                new_res = new_lattice.grid[residue.i_coord, residue.j_coord]
+                new_res_minus_1 = new_lattice.grid[
+                    res_i_minus_1.i_coord, res_i_minus_1.j_coord
+                ]
+                new_lattice.move_residue(new_res, sym_pos_i)
+                new_lattice.move_residue(new_res_minus_1, sym_pos_i_minus_1)
+                return new_lattice
+        return None
+
+    def crankshaft_moves(self, residue):
+        """
+        Attempt a crankshaft move for a residue based on its position in a
+        U-shaped bend.
+
+        This method first determines if the residue is part of a U-shaped bend.
+        If so, it checks whether the residue is located at the first or second
+        corner of the bend. It then attempts to perform the appropriate crankshaft
+        move (either the first or second corner move) and returns a new lattice
+        configuration with the movement applied if successful. If the move is not
+        possible, it returns None.
+
+        Parameters
+        ----------
+        residue : Residue
+            The residue object to be moved.
+
+        Returns
+        -------
+        Lattice or None
+            A new lattice configuration if a valid crankshaft move is made;
+            otherwise, None if the move cannot be performed.
+        """
+        is_ushaped = self.protein.is_residue_in_ushaped_bend(residue)
+        if not is_ushaped[0]:
+            return None
+        elif is_ushaped[1] == 1:
+            return self.crankshaft_first_corner(residue)
+        else:
+            return self.crankshaft_second_corner(residue)
+
                     print(
                         f"The position {sym_pos_i} is available for the residue {residue.number}"
                     )
