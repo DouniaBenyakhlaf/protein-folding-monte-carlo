@@ -6,3 +6,6 @@ channels:
 dependencies:
     - python
     - numpy
+    - pylint
+    - pycodestyle
+    - pydocstyle

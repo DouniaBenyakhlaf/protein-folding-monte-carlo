@@ -1,5 +1,7 @@
+"""Module for handling lattice."""
+
 import numpy as np
-from protein import *
+from protein import Protein
 
 
 class Lattice:
@@ -9,7 +11,8 @@ class Lattice:
     Attributes
     ----------
     grid : numpy.ndarray
-        An (n+2,n+2) numpy array where each cell contains a residue of a protein of size n.
+        An (n+2,n+2) numpy array where each cell
+        contains a residue of a protein of size n.
     dim : int
         The dimension of the numpy array.
     protein : Protein
@@ -30,7 +33,8 @@ class Lattice:
             self.dim = protein.length * 4  # dimension of the lattice
             self.grid = np.empty((self.dim, self.dim), dtype=object)
             self.grid[:] = None
-            # The protein is initially unfolded and placed horizontally in the lattice
+            # The protein is initially unfolded and placed horizontally
+            # in the lattice
             i = self.dim // 2  # the middle of the lattice
             j = self.dim // 2
             protein_position = 0
@@ -43,7 +47,9 @@ class Lattice:
                 protein_position += 1
                 j += 1
         else:
-            self.grid = grid  # in order to test some conformation (energy function etc). Remove this part later.
+            # in order to test some conformation (energy function etc).
+            # Remove this part later.
+            self.grid = grid
             self.dim = grid.shape[0]
 
     def __str__(self):
@@ -75,19 +81,22 @@ class Lattice:
         """
         Check if a position is within the bounds of the grid dimensions.
 
-        This method verifies whether the given position is within the valid range of the grid dimensions.
-        Specifically, it checks if both the x and y coordinates of the position are greater than 0 and less
-        than the grid's dimension size.
+        This method verifies whether the given position is within the valid
+        range of the grid dimensions. Specifically, it checks if both the x
+        and y coordinates of the position are greater than 0 and less than
+        the grid's dimension size.
 
         Parameters
         ----------
         position : tuple of int
-            A tuple (x, y) representing the coordinates of the position to be checked.
+            A tuple (x, y) representing the coordinates of the position
+            to be checked.
 
         Returns
         -------
         bool
-            True if the position is within the grid boundaries, otherwise False.
+            True if the position is within the grid boundaries,
+            otherwise False.
         """
         return (
             position[0] > 0
@@ -156,17 +165,21 @@ class Lattice:
         """
         Create a copy of the current lattice and its associated protein.
 
-        This method creates a deep copy of the protein and lattice. It initializes a new protein
-        object with the same amino acid sequence and then replicates the positions of each residue
-        in the grid. The residues from the original protein are removed from the grid in the new lattice,
-        and their coordinates are reassigned to match the original positions. Finally, the residues are
-        placed in the appropriate locations on the new lattice grid.
+        This method creates a deep copy of the protein and lattice.
+        It initializes a new protein object with the same amino acid
+        sequence and then replicates the positions of each residue in
+        the grid. The residues from the original protein are removed
+        from the grid in the new lattice, and their coordinates are
+        reassigned to match the original positions.
+        Finally, the residues are placed in the appropriate locations
+        on the new lattice grid.
 
         Returns
         -------
         Lattice
-            A new Lattice object that is a copy of the current one with the protein residues
-            positioned in the same way as in the original lattice.
+            A new Lattice object that is a copy of the current one
+            with the protein residues positioned in the same way as
+            in the original lattice.
         """
         new_protein = Protein(self.protein.aa_sequence)
         new_lattice = Lattice(new_protein)
@@ -200,7 +213,8 @@ class Lattice:
             if residue1.type == "H":
                 for j in range(i + 1, self.protein.length + 1):
                     residue2 = self.protein.get_residue(j)
-                    # not necessary to continue if the neighbour is not hydrophobic
+                    # not necessary to continue if the neighbour is
+                    # not hydrophobic
                     if (
                         residue2.type == "H"
                         and not residue1.is_connected(residue2)
@@ -211,13 +225,14 @@ class Lattice:
 
     def end_moves(self, residue):
         """
-        Attempt to reposition a terminal residue based on its neighbor's available positions.
+        Attempt to reposition a terminal residue.
 
-        This method checks if the given residue is at one of the ends of the protein sequence.
-        If it is the first or last residue, the function identifies the adjacent residue and
-        retrieves its available positions on the grid. If there are available positions, it
-        creates a new lattice configuration by moving the terminal residue to the first available
-        position.
+        This method checks if the given residue is at one of the ends
+        of the protein sequence. If it is the first or last residue,
+        the function identifies the adjacent residue and retrieves
+        its available positions on the grid. If there are available
+        positions, it creates a new lattice configuration by moving
+        the terminal residue to the first available position.
 
         Parameters
         ----------
@@ -227,8 +242,9 @@ class Lattice:
         Returns
         -------
         new_lattice : Lattice or None
-            A new lattice configuration with the terminal residue moved to the first available
-            position, or None if the residue is not terminal or no available positions exist.
+            A new lattice configuration with the terminal residue
+            moved to the first available position, or None if the
+            residue is not terminal or no available positions exist.
 
         """
         neighbour = None
@@ -249,12 +265,13 @@ class Lattice:
 
     def corner_moves(self, residue):
         """
-        Attempt to reposition a non-terminal residue to a corner move, if available.
+        Attempt to reposition a non-terminal residue to a corner move.
 
-        This method checks if the given residue is not a terminal one (i.e., neither the
-        first nor the last in the protein sequence). If the residue is connected to two
-        neighbors, the method identifies common available positions adjacent to both
-        neighbors. If a corner move is found, the function returns a new lattice with
+        This method checks if the given residue is not a terminal one
+        (i.e., neither the first nor the last in the protein sequence).
+        If the residue is connected to two neighbors, the method
+        identifies common available positions adjacent to both neighbors.
+        If a corner move is found, the function returns a new lattice with
         the residue repositioned to the first available corner move.
 
         Parameters
@@ -265,10 +282,11 @@ class Lattice:
         Returns
         -------
         new_lattice : Lattice or None
-            A new lattice with the residue moved to the first available corner position,
-            or None if no corner move is possible or the residue is terminal.
+            A new lattice with the residue moved to the first available
+            corner position, or None if no corner move is possible or
+            the residue is terminal.
         """
-        if residue.number != self.protein.length and residue.number != 1:
+        if residue.number not in (1, self.protein.length):
             connected_neighbour_1 = self.protein.get_residue(
                 (residue.number + 1)
             )
@@ -292,8 +310,7 @@ class Lattice:
 
     def crankshaft_first_corner(self, residue):
         """
-        Attempt to reposition a residue (in the first corner
-        of a U-shaped bend) and its neighbor.
+        Reposition a residue in the first corner of a U-shaped bend.
 
         This method attempts to move both the residue and its adjacent neighbor
         to their symmetrical positions on the grid. The move is only valid if
@@ -335,8 +352,7 @@ class Lattice:
 
     def crankshaft_second_corner(self, residue):
         """
-        Attempt to reposition a residue (in the second corner of a U-shaped bend)
-        and its neighbor.
+        Reposition a residue in the second corner of a U-shaped bend.
 
         This method attempts to move both the residue and its adjacent neighbor
         to their symmetrical positions on the grid at the second corner of the
@@ -382,15 +398,14 @@ class Lattice:
 
     def crankshaft_moves(self, residue):
         """
-        Attempt a crankshaft move for a residue based on its position in a
-        U-shaped bend.
+        Attempt a crankshaft move for a residue in a U-shaped bend.
 
         This method first determines if the residue is part of a U-shaped bend.
         If so, it checks whether the residue is located at the first or second
-        corner of the bend. It then attempts to perform the appropriate crankshaft
-        move (either the first or second corner move) and returns a new lattice
-        configuration with the movement applied if successful. If the move is not
-        possible, it returns None.
+        corner of the bend. It then attempts to perform the appropriate
+        crankshaft move (either the first or second corner move) and returns
+        a new lattice configuration with the movement applied if successful.
+        If the move is not possible, it returns None.
 
         Parameters
         ----------
@@ -406,37 +421,40 @@ class Lattice:
         is_ushaped = self.protein.is_residue_in_ushaped_bend(residue)
         if not is_ushaped[0]:
             return None
-        elif is_ushaped[1] == 1:
+        if is_ushaped[1] == 1:
             return self.crankshaft_first_corner(residue)
-        else:
-            return self.crankshaft_second_corner(residue)
+        return self.crankshaft_second_corner(residue)
 
     def successive_pulls(self, new_lattice, number_residue):
         """
         Perform a series of successive pull moves on the lattice.
 
-        This method applies successive pull moves to adjust the positions of residues
-        in the lattice to ensure that the sequence of residues becomes valid. It starts
-        from the residue with a number number_residue - 2 and attempts to reposition
-        each residue in sequence by moving it to the position of the residue two places
-        ahead in the original lattice. This process continues until the sequence is valid
-        or all residues from the starting point down to residue 1 have been adjusted.
+        This method applies successive pull moves to adjust the
+        positions of residues in the lattice to ensure that the
+        sequence of residues becomes valid. It starts from the
+        residue with a number number_residue - 2 and attempts
+        to reposition each residue in sequence by moving it to
+        the position of the residue two places ahead in the original
+        lattice. This process continues until the sequence is valid
+        or all residues from the starting point down to residue 1
+        have been adjusted.
 
         Parameters
         ----------
         new_lattice : Lattice
-            The lattice object where residues will be moved. This lattice is modified
-            during the process to reflect the new positions of the residues.
+            The lattice object where residues will be moved.
+            This lattice is modified during the process to
+            reflect the new positions of the residues.
         number_residue : int
-            The starting residue number for the successive pulls. The function will
-            start moving residues from number_residue - 2 down to residue 1.
+            The starting residue number for the successive
+            pulls. The function will start moving residues
+            from number_residue - 2 down to residue 1.
         """
         current_number_residu = number_residue - 2
         while (
             current_number_residu >= 1
             and not new_lattice.protein.is_sequence_valid()
         ):
-            # ne rentre jamais ici car il faut appliquer les modifications cette fois-ci... Les étapes precedentes ont l'air de fonctionner
             new_coordinate_i = self.protein.get_residue(
                 current_number_residu + 2
             ).i_coord
@@ -468,8 +486,8 @@ class Lattice:
         Returns
         -------
         bool
-            True if the positions are adjacent (either horizontally or vertically),
-            False otherwise.
+            True if the positions are adjacent (either horizontally
+            or vertically), False otherwise.
         """
         return (abs(pos1[0] - pos2[0]) == 1 and pos1[1] == pos2[1]) or (
             abs(pos1[1] - pos2[1]) == 1 and pos1[0] == pos2[0]
@@ -500,24 +518,27 @@ class Lattice:
 
     def get_position_l(self, residue):
         """
-        Retrieve the position L that is diagonally adjacent to the given residue  i and adjacent
-        to its neighbor i+1.
+        Retrieve the position L.
 
-        This method finds a position L on the grid that is diagonally adjacent to the given residue
-        and adjacent to its neighbor (residue i+1). It iterates over all available adjacent positions
-        of the neighbor and checks if any of them are diagonally adjacent to the current position
-        of the residue. The first valid position is returned.
+        This method finds a position L on the grid that is diagonally
+        adjacent to the given residue and adjacent to its neighbor
+        (residue i+1). It iterates over all available adjacent positions
+        of the neighbor and checks if any of them are diagonally adjacent
+        to the current position of the residue. The first valid position
+        is returned.
 
         Parameters
         ----------
         residue : Residue
-            The residue object for which to find a diagonally adjacent position L.
+            The residue object for which to find a diagonally
+            adjacent position L.
 
         Returns
         -------
         position_l : tuple of int or None
-            A tuple (i, j) representing the coordinates of the position L, or None if no suitable
-            diagonal position is found.
+            A tuple (i, j) representing the coordinates of
+            the position L, or None if no suitable diagonal
+            position is found.
         """
         position_l = None
         residu_plus_1 = self.protein.get_residue(residue.number + 1)
@@ -532,25 +553,27 @@ class Lattice:
 
     def get_position_c(self, residue, position_l):
         """
-        Retrieve the position C adjacent to both the given residue and position L.
+        Retrieve the position C.
 
-        This method finds a position C on the grid that is adjacent to the current
-        position of the specified residue and the given position L. It iterates over
-        all available adjacent positions of the residue and checks if any of them are also
-        adjacent to L. Once such a position is found, it is returned.
+        This method finds a position C on the grid that is adjacent to the
+        current position of the specified residue and the given position L.
+        It iterates over all available adjacent positions of the residue
+        and checks if any of them are also adjacent to L. Once such a
+        position is found, it is returned.
 
         Parameters
         ----------
         residue : Residue
             The residue object for which to find an adjacent position C.
         position_l : tuple of int
-            The coordinates (i, j) of the position L that must be adjacent to C.
+            The coordinates (i, j) of the position L that must be
+            adjacent to C.
 
         Returns
         -------
         position_c : tuple of int or None
-            A tuple (i, j) representing the coordinates of the position C, or None if
-            no suitable position is found.
+            A tuple (i, j) representing the coordinates of the position C,
+            or None if no suitable position is found.
         """
         position_c = None
         adj_res = self.get_adjacents_available_positions(residue)
@@ -564,21 +587,25 @@ class Lattice:
         """
         Attempt to perform a pull move on the given residue.
 
-        This method attempts to perform a pull move by shifting the residue i to an adjacent
-        position L and its preceding residue i-1 (if applicable) to a new position C
-        adjacent to both i and L.
+        This method attempts to perform a pull move by shifting the residue i
+        to an adjacent position L and its preceding residue i-1
+        (if applicable) to a new position C adjacent to both i and L.
 
         The pull move involves the following steps:
-        1. Retrieve position L, which is adjacent to i+1 and diagonally adjacent to i.
-        The check ensures that residue i+1 exists in the protein sequence.
-        2. If L is available, retrieve position C, which is adjacent to both i and L.
-        The case where C is occupied by i-1 (the preceding residue) is not implemented,
-        as it falls under a corner move case.
-        3. If both C and L are accessible, perform the pull move by moving residue i to L.
-        If residue i is the first one in the sequence, return the new lattice.
+        1. Retrieve position L, which is adjacent to i+1 and diagonally
+        adjacent to i. The check ensures that residue i+1 exists in the
+        protein sequence.
+        2. If L is available, retrieve position C, which is adjacent
+        to both i and L. The case where C is occupied by i-1
+        (the preceding residue) is not implemented, as it falls under
+        a corner move case.
+        3. If both C and L are accessible, perform the pull move by moving
+        residue i to L. If residue i is the first one in the sequence, return
+        the new lattice.
         4. If C is not occupied by i-1, move i to L and i-1 to C.
-        5. If the sequence is invalid after the move, attempt successive pull moves on preceding
-        residues until a valid sequence is obtained or the first residue is reached.
+        5. If the sequence is invalid after the move, attempt successive pull
+        moves on preceding residues until a valid sequence is obtained or the
+        first residue is reached.
 
         Parameters
         ----------
@@ -588,8 +615,8 @@ class Lattice:
         Returns
         -------
         new_lattice : Lattice or None
-            A new lattice configuration if a valid pull move is performed, or None if the move
-            cannot be made.
+            A new lattice configuration if a valid pull move is performed,
+            or None if the move cannot be made.
         """
         if residue.number + 1 <= self.protein.length:
             position_l = self.get_position_l(residue)
@@ -601,8 +628,7 @@ class Lattice:
                 new_lattice.move_residue(residue.number, position_l)
                 if residue.number == 1:
                     return new_lattice
-                else:
-                    new_lattice.move_residue(residue.number - 1, position_c)
-                    self.successive_pulls(new_lattice, residue.number)
-                    return new_lattice
+                new_lattice.move_residue(residue.number - 1, position_c)
+                self.successive_pulls(new_lattice, residue.number)
+                return new_lattice
         return None

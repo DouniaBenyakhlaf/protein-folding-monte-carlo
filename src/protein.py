@@ -1,4 +1,6 @@
-from residue import *
+"""Module for handling protein."""
+
+from residue import Residue
 
 
 class Protein:
@@ -19,7 +21,8 @@ class Protein:
         The last residue in the protein sequence.
     """
 
-    # Dictionary containing the type of each residue : H for hydrophobic and P for polar
+    # Dictionary containing the type of each residue :
+    # H for hydrophobic and P for polar
     RESIDUE_TYPE_DICT = {
         "A": "H",  # Alanine
         "R": "P",  # Arginine
@@ -73,7 +76,8 @@ class Protein:
             A formatted string describing the protein, including its length and
             the sequence of residues with their types and numbers.
         """
-        description = f"Protein length = {self.length}\nAA_Sequence : {self.aa_sequence}\nHP_Sequence : "
+        description = f"Protein length = {self.length}\n\
+AA_Sequence : {self.aa_sequence}\nHP_Sequence : "
         for residue in self.hp_sequence:
             description += f"{residue.type}{residue.number} "
         return description
@@ -98,9 +102,11 @@ class Protein:
         """
         Check if a residue is part of a U-shaped bend in the chain.
 
-        This method determines whether the given residue is part of a U-shaped bend by checking
-        the adjacency of other residues in the chain. The method verifies if the residue is in
-        either the first or the second corner of a U-shaped bend based on the adjacency conditions.
+        This method determines whether the given residue is part of a
+        U-shaped bend by checking the adjacency of other residues in
+        the chain. The method verifies if the residue is in either the
+        first or the second corner of a U-shaped bend based on the
+        adjacency conditions.
 
         Parameters
         ----------
@@ -110,21 +116,22 @@ class Protein:
         Returns
         -------
         tuple of (bool, int)
-            A tuple where the first element is a boolean indicating if the residue is part of a
-            U-shaped bend, and the second element is an integer indicating the corner type:
+            A tuple where the first element is a boolean indicating if
+            the residue is part of a U-shaped bend, and the second element
+            is an integer indicating the corner type:
             - 1 for the first corner
             - 2 for the second corner
             - 0 if the residue is not part of a U-shaped bend.
         """
-        # residue i is part of a u-shaped bend in the chain if residue i-1 and i+2 are adjacents
-        # (first corner)
+        # residue i is part of a u-shaped bend in the chain if residue
+        # i-1 and i+2 are adjacents (first corner)
         if (residue.number - 1) >= 1 and (residue.number + 2) < self.length:
             res_minus_1 = self.get_residue(residue.number - 1)
             res_plus_2 = self.get_residue(residue.number + 2)
             if res_minus_1.is_adjacent(res_plus_2):
                 return (True, 1)
-        # residue i is part of a u-shaped bend in the chain if residue i-2 and i+1 are adjacents
-        # (second corner)
+        # residue i is part of a u-shaped bend in the chain if residue
+        # i-2 and i+1 are adjacents (second corner)
         if (residue.number - 2) >= 1 and (residue.number + 1) < self.length:
             res_minus_2 = self.get_residue(residue.number - 2)
             res_plus_1 = self.get_residue(residue.number + 1)
@@ -134,17 +141,19 @@ class Protein:
 
     def is_sequence_valid(self):
         """
-        Check if the HP sequence is valid based on adjacency of consecutive residues.
+        Check if the HP sequence is valid.
 
-        This method verifies if each consecutive pair of residues in the HP sequence is adjacent.
-        The sequence is considered valid if every residue is adjacent to the next one in the sequence.
+        This method verifies if each consecutive pair of residues in the
+        HP sequence is adjacent. The sequence is considered valid if every
+        residue is adjacent to the next one in the sequence.
 
         Returns
         -------
         bool
-            True if all consecutive residues in the sequence are adjacent, otherwise False.
+            True if all consecutive residues in the sequence are adjacent,
+            otherwise False.
         """
         for i in range(self.length - 1):
-            if not (self.hp_sequence[i].is_adjacent(self.hp_sequence[i + 1])):
+            if not self.hp_sequence[i].is_adjacent(self.hp_sequence[i + 1]):
                 return False
         return True

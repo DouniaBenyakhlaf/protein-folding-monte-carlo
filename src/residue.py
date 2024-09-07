@@ -1,3 +1,6 @@
+"""Module for handling protein residues."""
+
+
 class Residue:
     """
     A class used to model a residue.
@@ -16,9 +19,9 @@ class Residue:
         The j coordinate of the residue in the lattice.
     """
 
-    def __init__(self, type, number, i_coord, j_coord):
+    def __init__(self, res_type, number, i_coord, j_coord):
         """
-        Initializes a Residue instance with a type, number, and coordinates.
+        Initialize a Residue instance with a type, number, and coordinates.
 
         Parameters
         ----------
@@ -31,7 +34,7 @@ class Residue:
         j_coord : int
             The j coordinate of the residue in the lattice.
         """
-        self.type = type
+        self.type = res_type
         self.number = number
         self.i_coord = i_coord
         self.j_coord = j_coord
@@ -43,15 +46,15 @@ class Residue:
         Returns
         -------
         str
-            A formatted string describing the residue, including its type, number,
-            and lattice position.
+            A formatted string describing the residue,
+            including its type, number, and lattice position.
         """
-        return f"The residue {self.type}{self.number} is in position ({self.i_coord},{self.j_coord}) in the lattice."
+        return f"The residue {self.type}{self.number} is in \
+position ({self.i_coord},{self.j_coord}) in the lattice."
 
     def is_connected(self, res):
         """
-        Determines if the current residue is connected to another residue
-        based on their position numbers.
+        Determine if the current residue is connected to another residue.
 
         Parameters
         ----------
@@ -81,7 +84,8 @@ class Residue:
         Returns
         -------
         bool
-            True if the current residue is adjacent to residue2, False otherwise.
+            True if the current residue is adjacent to residue2,
+            False otherwise.
         """
         return (
             abs(self.i_coord - residue2.i_coord) == 1
@@ -93,21 +97,24 @@ class Residue:
 
     def get_symetrical_position(self, residue):
         """
-        Calculate the symmetrical position of the current residue with respect to another residue.
+        Calculate the symmetrical position of the current residue.
 
-        This method computes the symmetrical position of the current residue (self) relative to
-        another residue. The symmetry is calculated in a 2D grid, based on the coordinates of the
-        given residue.
+        This method computes the symmetrical position of the current
+        residue (self) relative to another residue. The symmetry is
+        calculated in a 2D grid, based on the coordinates of the given
+        residue.
 
         Parameters
         ----------
         residue : Residue
-            The residue with respect to which the symmetrical position is calculated.
+            The residue with respect to which the symmetrical position
+            is calculated.
 
         Returns
         -------
         tuple of int
-            A tuple (x, y) representing the symmetrical position of the current residue in the grid.
+            A tuple (x, y) representing the symmetrical position of the
+            current residue in the grid.
         """
         return (
             2 * residue.i_coord - self.i_coord,
