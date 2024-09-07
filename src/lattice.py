@@ -421,6 +421,46 @@ class Lattice:
         else:
             return self.crankshaft_second_corner(residue)
 
+    # Essayer de simplifier cette fonction
+    def possible_pullmoves(self, residue):
+        # 1) recuperer L qui est adjacent a i+1 et diagonalement adjacent a i (verifier que i-1 existe)
+        if residue.number + 1 <= self.protein.length:
+            print("pas dernier residue")
+            residu_plus_1 = self.protein.get_residue(residue.number + 1)
+            adj_res_plus_1 = self.get_adjacents_available_positions(
+                residu_plus_1
+            )
+            print(adj_res_plus_1)
+            position_l = None
+            position_c = None
+            for elem in adj_res_plus_1:
+                if (
+                    abs(residue.i_coord - elem[0]) == 1
+                    and abs(residue.j_coord - elem[1]) == 1
+                ):
+                    position_l = elem
+                    break
+            if position_l is not None:
+                print("il existe une position L")
+                # 2) recuperer C qui est adjacent à i et L
+                # je n'implémente pas le cas ou C est occupe par i-1 car revient au corner moves
+                # si je change d'avis il faut juste verifier si le residu i-1 est adjacent a L
+                adj_res = self.get_adjacents_available_positions(residue)
+                for elem in adj_res:
+                    if (
+                        abs(elem[0] - position_l[0]) == 1
+                        and elem[1] == position_l[1]
+                    ) or (
+                        abs(elem[1] - position_l[1]) == 1
+                        and elem[0] == position_l[0]
+                    ):
+                        position_c = elem
+                        break
+            # On peut faire le pull moves
+            if position_c is not None:
+                print("Il existe une position C")
+                if residue.number == 1:
+                    print("pas de i-1")
                     print(
                         f"The position {sym_pos_i} is available for the residue {residue.number}"
                     )
