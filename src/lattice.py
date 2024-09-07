@@ -461,18 +461,30 @@ class Lattice:
                 if residue.number == 1:
                     print("pas de i-1")
                     print(
-                        f"The position {sym_pos_i} is available for the residue {residue.number}"
+                        f"New position of res {residue.number} = {position_l}\n"
                     )
+                else:
+                    # 3) si C et L sont accessible on peut faire le pull moves
+                    # 4) si oui alors si C est occupe par le residu i-1, il faut juste bouger i dans L (= corner move)
+                    # 5) si C pas occupe pas i-1, il faut bouger i dans L et i-1 dans C
+                    # 6) si sequence pas valide alors tant que pas valide ou on atteint le premier residu on bouge res tmp a la position du res+2. On commence par res-2.
                     print(
-                        f"The position {sym_pos_i_minus_1} is available for the residue {residue.number-1}"
+                        f"New position of res {residue.number} = {position_l}\nNew position of res {residue.number - 1} = {position_c}"
                     )
-                    return True
-        return False
-
-    def possible_crankshaftmoves(self, residue):
-        if self.crankshaft_first_corner(
-            residue
-        ) or self.crankshaft_second_corner(residue):
-            print("Possible")
-        else:
-            print("Not possible")
+                    current_number_residu = residue.number - 2
+                    while (
+                        current_number_residu >= 1
+                        and not self.protein.is_sequence_valid()
+                    ):
+                        # ne rentre jamais ici car il faut appliquer les modifications cette fois-ci... Les étapes precedentes ont l'air de fonctionner
+                        print("sequence pas correcte")
+                        new_coordinate_i = self.protein.get_residue(
+                            current_number_residu + 2
+                        ).i_coord
+                        new_coordinate_j = self.protein.get_residue(
+                            current_number_residu + 2
+                        ).j_coord
+                        print(
+                            f"New position of res {residue.number - current_number_residu} = {(new_coordinate_i, new_coordinate_j)}\n"
+                        )
+                        current_number_residu -= 1
