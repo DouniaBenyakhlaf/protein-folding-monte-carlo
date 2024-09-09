@@ -293,7 +293,7 @@ if __name__ == "__main__":
     PROTEIN_4 = (
         "RRRGGRRGGRRRRRGGGGGGGRRGGRRRRGGRRGRR"  # P3H2P2H2P5H7P2H2P4H2P2HP2
     )
-    PROTEIN_5 = "RRGRRGGRRGGRRRRRGGGGGGGGGGRRRRRRGGRRGGRRGRRGGGGG"  # P2H(P2H2)2P5H10P6(H2P2)2HP2H5
+    PROTEIN_5 = "RRGRRGGRRGGRRRRRGGGGGGGGGGRRRRRRGGRRGGRRGRRGGGGG"  # P2H(P2H2)2P5H10P6(H2P2)2HP2H5 # arret seed 15
     PROTEIN_6 = "GGRGRGRGRGGGGRGRRRGRRRGRRRRGRRRGRRRGRGGGGRGRGRGRGG"  # H2(PH)3PH4PH(P3H)2P4H(P3H)2PH4(PH)4H
     PROTEIN_7 = "RRGGGRGGGGGGGGRRRGGGGGGGGGGRGRRRGGGGGGGGGGGGRRRRGGGGGGRGGRGR"  # P2H3PH8P3H10PHP3H12P4H6PH2PHP
     PROTEIN_8 = (
@@ -302,10 +302,16 @@ if __name__ == "__main__":
     PROTEIN_9 = "GGGGRRRRGGGGGGGGGGGGRRRRRRGGGGGGGGGGGGRRRGGGGGGGGGGGGRRRGGGGGGGGGGGGRRRGRRGGRRGGRRGRG"
     PROTEIN_10 = "RRRGGRRGGGGRRGGGRGGRGGRGGGGRRRRRRRRGGGGGGRRGGGGGGRRRRRRRRRGRGGRGGGGGGGGGGGRRGGGRGGRGRRGRGGGRRRRRRGGG"
     PROTEIN_11 = "RRRRRRGRGGRRRRRGGGRGGGGGRGGRRRRGGRRGGRGGGGGRGGGGGGGGGGRGGRGGGGGGGRRRRRRRRRRRGGGGGGGRRGRGGGRRRRRRGRGG"
-    # For protein < 50 residues : 500 runs with unique seed
-    seeds = [i for i in range(4, 500)]
-    for seed in seeds:
-        print(f"new_run with seed = {seed}")
-        random.seed(seed)
-        REMC = REMCSimulation(PROTEIN_5, optimal_energy=-23)  # arret seed 14
-        REMC.run()
+    # # For protein < 50 residues : 500 runs with unique seed
+    # seeds = [i for i in range(4, 500)]
+    # for seed in seeds:
+    #     print(f"new_run with seed = {seed}")
+    #     random.seed(seed)
+    #     REMC = REMCSimulation(PROTEIN_6, optimal_energy=-21, max_iter=5000)
+    #     REMC.run()
+
+    REMC = REMCSimulation(PROTEIN_1, optimal_energy=-9, max_iter=5000)
+    REMC.run()
+    for replica in REMC.replicas.values():
+        if replica.compute_energy() == -9:
+            replica.protein.plot_protein_graph()

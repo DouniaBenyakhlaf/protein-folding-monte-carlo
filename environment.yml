@@ -9,3 +9,5 @@ dependencies:
     - pylint
     - pycodestyle
     - pydocstyle
+    - networkx
+    - matplotlib
