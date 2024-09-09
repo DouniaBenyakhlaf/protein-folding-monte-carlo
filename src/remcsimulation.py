@@ -105,13 +105,41 @@ class REMCSimulation:
         print(energy)
 
 
+def expand_sequence(seq):
+    result = ""
+    i = 0
+    while i < len(seq):
+        if seq[i].isalpha():  # Vérifier si c'est une lettre
+            letter = seq[i]
+            i += 1
+            num_str = ""
+            while (
+                i < len(seq) and seq[i].isdigit()
+            ):  # Collecter le nombre associé
+                num_str += seq[i]
+                i += 1
+            num = (
+                int(num_str) if num_str else 1
+            )  # Si pas de nombre, utiliser 1
+            result += letter * num  # Répéter la lettre
+        else:
+            i += 1  # Ignorer les espaces
+    return result.replace("P", "R").replace("H", "G")
+
 
 if __name__ == "__main__":
-    AA_SEQUENCE = "MLSLGLLLLGLLQGVGKH"
-    REMC = REMCSimulation(AA_SEQUENCE)
-    print(REMC.replicas)
-    REMC.swap_labels(
-        list(REMC.replicas.keys())[2], list(REMC.replicas.keys())[4]
+
+    # Test sequence 1 : HPHPPHHPHPPHPHHPPHPH <=> "GRGRRGGRGRRGRGGRRGRG" # 9
+    print(expand_sequence("P2H3PH8P3H10PHP3H12P4H6PH2PHP"))
+    # AA_SEQUENCE = expand_sequence("P2H3PH8P3H10PHP3H12P4H6PH2PHP") # 32
+    AA_SEQUENCE = expand_sequence(
+        "P6HPH2P5H3PH5PH2P4H2P2H2PH5PH10PH2PH7P11H7P2HPH3P6HPH2"
     )
-    print()
-    print(REMC.replicas)
+    REMC = REMCSimulation(AA_SEQUENCE)
+    # print(REMC.replicas)
+    # REMC.swap_labels(
+    #     list(REMC.replicas.keys())[2], list(REMC.replicas.keys())[4]
+    # )
+    # print()
+    # print(REMC.replicas)
+    REMC.run()
