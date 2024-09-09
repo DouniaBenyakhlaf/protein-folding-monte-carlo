@@ -42,10 +42,10 @@ class REMCSimulation:
             temperatures.append(tmp)
         return temperatures
 
-    def swap_labels(self, replica1, replica2):
-        previous_temp_rep1 = self.replicas[replica1]
-        self.replicas[replica1] = self.replicas[replica2]
-        self.replicas[replica2] = previous_temp_rep1
+    def swap_labels(self, temperature1, temperature2):
+        previous_replica1 = self.replicas[temperature1]
+        self.replicas[temperature1] = self.replicas[temperature2]
+        self.replicas[temperature2] = previous_replica1
 
     def mcsearch(self, current_lattice, temperature):
         for i in range(self.nb_steps):
