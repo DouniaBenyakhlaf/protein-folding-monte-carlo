@@ -262,8 +262,9 @@ class Lattice:
         available_positions = self.get_adjacents_available_positions(neighbour)
         if len(available_positions) > 0:
             new_lattice = self.copy()
+            position_choice = random.randint(0, len(available_positions) - 1)
             new_lattice.move_residue(
-                residue.number, available_positions[0]
+                residue.number, available_positions[position_choice]  # tester
             )  # first position by default
             return new_lattice
         return None
@@ -545,16 +546,18 @@ class Lattice:
             the position L, or None if no suitable diagonal
             position is found.
         """
-        position_l = None
+        position_l = []
         residu_plus_1 = self.protein.get_residue(residue.number + 1)
         adj_res_plus_1 = self.get_adjacents_available_positions(residu_plus_1)
         for elem in adj_res_plus_1:
             if Lattice.is_diagonal_position(
                 (residue.i_coord, residue.j_coord), elem
             ):
-                position_l = elem
-                break  # stop at the first solution
-        return position_l
+                position_l.append(elem)
+        if len(position_l) > 0:
+            position = random.randint(0, len(position_l) - 1)
+            return position_l[position]
+        return None
 
     def get_position_c(self, residue, position_l):
         """
@@ -693,7 +696,6 @@ class Lattice:
         for selected_move in shuffled_moves:
             new_lattice = selected_move(residue)
             if new_lattice is not None:
-                print(selected_move)
                 return (
                     new_lattice  # Return the lattice if a valid move is found
                 )
