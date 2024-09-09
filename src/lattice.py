@@ -638,24 +638,57 @@ class Lattice:
                 return new_lattice
         return None
 
-    def random_move(self):
+    def random_move(self, residue, pull_prob=0.4):
         """
-        Select a random movement function from a list of possible moves.
+        Select a random movement function from a list of possible moves
+        with specified probabilities.
 
-        This method randomly selects one movement strategy from a list of
-        available moves, which includes end moves, corner moves, crankshaft
-        moves, and pull moves. The chosen move can then be executed on
-        the lattice.
+        Parameters
+        ----------
+        pull_prob : float, optional
+            Probability of selecting the pull_moves function. The default is 0.4.
 
         Returns
         -------
         function
             A function reference representing one of the movement strategies.
         """
+        # Ensure the probability is within the valid range
+        if not (0 <= pull_prob <= 1):
+            raise ValueError("Probability must be between 0 and 1.")
+
+        # List of movement functions
         moves = [
             self.end_moves,
             self.corner_moves,
             self.crankshaft_moves,
             self.pull_moves,
         ]
-        return random.choice(moves)
+
+        # Calculate the probability for the other moves
+        other_prob = (
+            1 - pull_prob
+        ) / 3  # Distribute remaining probability equally among the other moves
+
+        # Probabilities associated with each movement function
+        probabilities = [
+            other_prob,  # Probability for end_moves
+            other_prob,  # Probability for corner_moves
+            other_prob,  # Probability for crankshaft_moves
+            pull_prob,  # Probability for pull_moves
+        ]
+
+        # Perform a random shuffle of the moves (without repetition)
+        shuffled_moves = random.choices(
+            moves, weights=probabilities, k=len(moves)
+        )
+
+        # Try each move in the shuffled list until one is successful
+        for selected_move in shuffled_moves:
+            new_lattice = selected_move(residue)
+            if new_lattice is not None:
+                print(selected_move)
+                return (
+                    new_lattice  # Return the lattice if a valid move is found
+                )
+        return None
