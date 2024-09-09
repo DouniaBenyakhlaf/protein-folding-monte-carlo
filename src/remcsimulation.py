@@ -15,7 +15,8 @@ class REMCSimulation:
         tmp_min=160,
         tmp_max=220,
         nb_replicas=5,
-        optimal_energy=-5,
+        optimal_energy=-48,
+        max_iter=50000,
     ):
         self.aa_sequence = aa_sequence
         self.nb_steps = nb_steps
@@ -23,6 +24,7 @@ class REMCSimulation:
         self.tmp_max = tmp_max
         self.nb_replicas = nb_replicas
         self.optimal_energy = optimal_energy
+        self.max_iter = max_iter
         self.replicas = {}
         lattice = Lattice(Protein(self.aa_sequence))
         temperatures = self.linear_distribution_temperature(
@@ -30,7 +32,7 @@ class REMCSimulation:
         )
         for tmp in temperatures:
             replica = lattice.copy()
-            self.replicas[replica] = tmp
+            self.replicas[tmp] = replica
 
     def linear_distribution_temperature(self, tmp_min, tmp_max):
         temperatures = []
