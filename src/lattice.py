@@ -611,7 +611,8 @@ class Lattice:
         first residue is reached.
         6. If C is not available, but the coordinates of residue i-1 match
         the position C, then this is equivalent to a corner move. In this case,
-        only move residue i to position L and return the new lattice configuration.
+        only move residue i to position L and return the new lattice
+        configuration.
 
         Parameters
         ----------
@@ -637,7 +638,7 @@ class Lattice:
                 new_lattice.move_residue(residue.number - 1, position_c)
                 self.successive_pulls(new_lattice, residue.number)
                 return new_lattice
-            elif position_l is not None and residue.number > 1:
+            if position_l is not None and residue.number > 1:
                 res_minus_1 = self.protein.get_residue(residue.number - 1)
                 if Lattice.is_adjacent_position(
                     (res_minus_1.i_coord, res_minus_1.j_coord), position_l
@@ -649,23 +650,19 @@ class Lattice:
 
     def random_move(self, residue, pull_prob=0.4):
         """
-        Select a random movement function from a list of possible moves
-        with specified probabilities.
+        Select a random movement function from a list of possible moves.
 
         Parameters
         ----------
         pull_prob : float, optional
-            Probability of selecting the pull_moves function. The default is 0.4.
+            Probability of selecting the pull_moves function.
+            The default is 0.4.
 
         Returns
         -------
         function
             A function reference representing one of the movement strategies.
         """
-        # Ensure the probability is within the valid range
-        if not (0 <= pull_prob <= 1):
-            raise ValueError("Probability must be between 0 and 1.")
-
         # List of movement functions
         moves = [
             self.end_moves,
