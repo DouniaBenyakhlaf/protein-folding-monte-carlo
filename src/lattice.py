@@ -601,9 +601,7 @@ class Lattice:
         adjacent to i. The check ensures that residue i+1 exists in the
         protein sequence.
         2. If L is available, retrieve position C, which is adjacent
-        to both i and L. The case where C is occupied by i-1
-        (the preceding residue) is not implemented, as it falls under
-        a corner move case.
+        to both i and L.
         3. If both C and L are accessible, perform the pull move by moving
         residue i to L. If residue i is the first one in the sequence, return
         the new lattice.
@@ -611,6 +609,9 @@ class Lattice:
         5. If the sequence is invalid after the move, attempt successive pull
         moves on preceding residues until a valid sequence is obtained or the
         first residue is reached.
+        6. If C is not available, but the coordinates of residue i-1 match
+        the position C, then this is equivalent to a corner move. In this case,
+        only move residue i to position L and return the new lattice configuration.
 
         Parameters
         ----------
@@ -636,6 +637,14 @@ class Lattice:
                 new_lattice.move_residue(residue.number - 1, position_c)
                 self.successive_pulls(new_lattice, residue.number)
                 return new_lattice
+            elif position_l is not None and residue.number > 1:
+                res_minus_1 = self.protein.get_residue(residue.number - 1)
+                if Lattice.is_adjacent_position(
+                    (res_minus_1.i_coord, res_minus_1.j_coord), position_l
+                ):
+                    new_lattice = self.copy()
+                    new_lattice.move_residue(residue.number, position_l)
+                    return new_lattice
         return None
 
     def random_move(self, residue, pull_prob=0.4):
