@@ -66,7 +66,44 @@ class REMCSimulation:
         return current_lattice
 
     def run(self):
-        pass
+        energy = 0
+        offset = 0
+        nb_iterations = 0
+        while energy > self.optimal_energy and nb_iterations < self.max_iter:
+            if nb_iterations % 500 == 0:
+                print(
+                    f"===============Iteration {nb_iterations}==============="
+                )
+            for temperature, replica in self.replicas.items():
+                self.replicas[temperature] = self.mcsearch(
+                    replica, temperature
+                )
+                new_energy = self.replicas[temperature].compute_energy()
+                if new_energy < energy:
+                    energy = new_energy
+            i = offset
+            while i + 1 < len(self.replicas):
+                j = i + 1
+                tmp_i = list(self.replicas.keys())[i]
+                tmp_j = list(self.replicas.keys())[j]
+                replica_i = self.replicas[tmp_i]
+                replica_j = self.replicas[tmp_j]
+                delta = (1 / tmp_j - 1 / tmp_i) * (
+                    replica_i.compute_energy() - replica_j.compute_energy()
+                )
+                if delta <= 0:
+                    self.swap_labels(tmp_i, tmp_j)
+                else:
+                    prob = random.random()
+                    if prob <= math.exp(-delta):
+                        self.swap_labels(tmp_i, tmp_j)
+                i = i + 2
+            offset = 1 - offset
+            nb_iterations += 1
+            if nb_iterations % 500 == 0:
+                print(f"Energy_{nb_iterations} = {energy}")
+        print(energy)
+
 
 
 if __name__ == "__main__":
