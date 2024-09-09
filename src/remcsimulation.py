@@ -47,24 +47,21 @@ class REMCSimulation:
         self.replicas[replica1] = self.replicas[replica2]
         self.replicas[replica2] = previous_temp_rep1
 
-    def mcsearch(self, current_lattice):
+    def mcsearch(self, current_lattice, temperature):
         for i in range(self.nb_steps):
             protein_length = current_lattice.protein.length
             residue_number = random.randint(1, protein_length)
-            residue = self.current_lattice.protein.get_residue(residue_number)
-            move = self.current_lattice.random_move()
-            new_lattice = move(residue)
+            residue = current_lattice.protein.get_residue(residue_number)
+            new_lattice = current_lattice.random_move(residue)
             if new_lattice is not None:
-                current_energy = self.current_lattice.compute_energy()
+                current_energy = current_lattice.compute_energy()
                 new_energy = new_lattice.compute_energy()
                 delta_energy = new_energy - current_energy
                 if delta_energy <= 0:
                     return new_lattice
                 else:
                     random_prob = random.random()
-                    if random_prob > math.exp(
-                        -delta_energy / self.temperature
-                    ):
+                    if random_prob > math.exp(-delta_energy / temperature):
                         return new_lattice
         return current_lattice
 
