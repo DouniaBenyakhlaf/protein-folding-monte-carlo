@@ -38,5 +38,9 @@ You will then be prompted to test the algorithm on some pre-provided examples. Y
 #### Examples:
 2D representations of replica 4 after running the algorithm on protein 1
 ![Networkx graph](results/replica_4.png)
-![PyMOL GIF](results/replica4_protein1.gif)
+<video width="640" height="360" controls>
+  <source src="https://example.com/video.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+![PyMOL GIF](results/test%20gif.gif)
 
