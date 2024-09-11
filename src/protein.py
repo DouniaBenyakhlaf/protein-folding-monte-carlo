@@ -160,13 +160,19 @@ AA_Sequence : {self.aa_sequence}\nHP_Sequence : "
                 return False
         return True
 
-    def plot_protein_graph(self):
+    def plot_protein_graph(self, filename):
         """
-        Create and display a 2D graph of the protein residues.
+        Create and save a 2D graph of the protein residues to a file.
 
-        This method uses the NetworkX and Matplotlib libraries to plot the
-        residues in the protein sequence as nodes, with connections
-        representing adjacent residues.
+        This method uses the NetworkX and Matplotlib libraries to create a
+        2D graph where each node represents a residue in the protein sequence.
+        Connections between nodes indicate adjacent residues. The graph is
+        saved to a file specified by the 'filename' parameter.
+
+        Parameters
+        ----------
+        filename : str
+            The path to the file where the graph will be saved.
         """
         graph = nx.Graph()
 
@@ -205,7 +211,9 @@ AA_Sequence : {self.aa_sequence}\nHP_Sequence : "
             font_size=10,
         )
         plt.title("2D Representation of the Protein Sequence")
-        plt.show()
+        # Save the figure to the specified file.
+        plt.savefig(filename)
+        plt.close()  # Close the plot to free up memory
 
     def generate_pymol_script(
         self, name, state, filename="protein_representation.pml"
