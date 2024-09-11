@@ -38,5 +38,7 @@ You will then be prompted to test the algorithm on some pre-provided examples. Y
 #### Examples:
 2D representations of replica 4 after running the algorithm on protein 1
 ![Networkx graph](results/replica_4.png)
+Representation of the final state of replica 4 using Networkx.
 ![PyMOL representation](results/image_protein1_replica4_last_state.png)
+Representation of the final state of replica 4 using PyMOL.
 
