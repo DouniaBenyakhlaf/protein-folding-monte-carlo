@@ -135,9 +135,9 @@ if __name__ == "__main__":
         )
     print(f"{BLUE}[12]{RESET} I want to test it on my own protein")
     print(
-        f"\n{ORANGE}[INFO]{RESET} For the first 3 proteins that converge quickly, a PyMOL script is generated for each replica in \
-the results directory.\nFor other examples that do not converge after 50,000 iterations, only the final state of each \
-replica\nis represented in a Python script and a Networkx graph available in the results directory.\n"
+        f"\n{ORANGE}[INFO]{RESET} For the first 3 proteins that converge quickly, a PyMOL script is generated for some states of each replica in \
+the results directory. The final state of each replica is also represented in a Networkx graph.\nFor other examples that do not converge after \
+50,000 iterations, only the final state of each replica\nis represented in a PyMOL script and a Networkx graph, available in the results directory.\n"
     )
     NUMBER_CHOICE = verify_number()
     if NUMBER_CHOICE == 12:
@@ -174,6 +174,9 @@ replica\nis represented in a Python script and a Networkx graph available in the
             REMC.run(display=True)
             NUM_REPLICA = 0
             for replica in REMC.replicas.values():
+                replica.protein.plot_protein_graph(
+                    f"../results/replica_{NUM_REPLICA}"
+                )
                 print(
                     f"Energy replica {NUM_REPLICA} = {replica.compute_energy()}"
                 )
