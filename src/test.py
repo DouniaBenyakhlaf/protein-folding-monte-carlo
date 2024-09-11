@@ -1,0 +1,45 @@
+"""Test the replica exchange Monte Carlo algorithm for protein folding."""
+
+import random
+from remcsimulation import REMCSimulation
+
+
+if __name__ == "__main__":
+
+    # Test sequence 1 : HPHPPHHPHPPHPHHPPHPH <=> "GRGRRGGRGRRGRGGRRGRG" # 9
+    PROTEIN_1 = "GRGRRGGRGRRGRGGRRGRG"
+    PROTEIN_2 = "GGRRGRRGRRGRRGRRGRRGRRGG"  # H2(P2H)7H
+    PROTEIN_3 = "RRGRRGGRRRRGGRRRRGGRRRRGG"  # P2HP2(H2P4)3H2
+    PROTEIN_4 = (
+        "RRRGGRRGGRRRRRGGGGGGGRRGGRRRRGGRRGRR"  # P3H2P2H2P5H7P2H2P4H2P2HP2
+    )
+    # P2H(P2H2)2P5H10P6(H2P2)2HP2H5 # arret seed 15
+    PROTEIN_5 = "RRGRRGGRRGGRRRRRGGGGGGGGGGRRRRRRGGRRGGRRGRRGGGGG"
+    # H2(PH)3PH4PH(P3H)2P4H(P3H)2PH4(PH)4H
+    PROTEIN_6 = "GGRGRGRGRGGGGRGRRRGRRRGRRRRGRRRGRRRGRGGGGRGRGRGRGG"
+    # P2H3PH8P3H10PHP3H12P4H6PH2PHP
+    PROTEIN_7 = "RRGGGRGGGGGGGGRRRGGGGGGGGGGRGRRRGGGGGGGGGGGGRRRRGGGGGGRGGRGR"
+    PROTEIN_8 = (
+        "GGGGGGGGGGGGRGRGRRGGRRGGRRGRRGGRRGGRRGRRGGRRGGRRGRGRGGGGGGGGGGGG"
+    )
+    PROTEIN_9 = "GGGGRRRRGGGGGGGGGGGGRRRRRRGGGGGGGGGGGGRRRGGGGGGGGGGGGRRRGGGGG\
+    GGGGGGGRRRGRRGGRRGGRRGRG"
+    PROTEIN_10 = "RRRGGRRGGGGRRGGGRGGRGGRGGGGRRRRRRRRGGGGGGRRGGGGGGRRRRRRRRRGR\
+    GGRGGGGGGGGGGGRRGGGRGGRGRRGRGGGRRRRRRGGG"
+    PROTEIN_11 = "RRRRRRGRGGRRRRRGGGRGGGGGRGGRRRRGGRRGGRGGGGGRGGGGGGGGGGRGGRGG\
+    GGGGGRRRRRRRRRRRGGGGGGGRRGRGGGRRRRRRGRGG"
+    # For protein < 50 residues : 500 runs with unique seed
+    # seeds = [i for i in range(0, 500)]
+    # for seed in seeds:
+    #     print(f"new_run with seed = {seed}")
+    #     random.seed(seed)
+    #     REMC = REMCSimulation(PROTEIN_11, optimal_energy=-48, max_iter=25000)
+    #     REMC.run()
+
+    random.seed(1)
+    REMC = REMCSimulation(PROTEIN_2, optimal_energy=-9, max_iter=50000)
+    REMC.run()
+    # for replica in REMC.replicas.values():
+    #     if replica.compute_energy() == -9:
+    #         replica.protein.plot_protein_graph()
+    #         replica.protein.write_protein_to_pdb()

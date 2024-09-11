@@ -162,27 +162,29 @@ AA_Sequence : {self.aa_sequence}\nHP_Sequence : "
 
     def plot_protein_graph(self):
         """
-        Create and display a 2D graph of the protein residues and their connections.
+        Create and display a 2D graph of the protein residues.
 
         This method uses the NetworkX and Matplotlib libraries to plot the
-        residues in the protein sequence as nodes, with connections representing
-        adjacent residues.
+        residues in the protein sequence as nodes, with connections
+        representing adjacent residues.
         """
-        G = nx.Graph()
+        graph = nx.Graph()
 
         # Add each residue as a node to the graph with its 2D coordinates.
         for residue in self.hp_sequence:
-            G.add_node(residue.number, pos=(residue.j_coord, -residue.i_coord))
+            graph.add_node(
+                residue.number, pos=(residue.j_coord, -residue.i_coord)
+            )
 
         # Add edges between connected residues.
         for i in range(len(self.hp_sequence) - 1):
             if self.hp_sequence[i].is_connected(self.hp_sequence[i + 1]):
-                G.add_edge(
+                graph.add_edge(
                     self.hp_sequence[i].number, self.hp_sequence[i + 1].number
                 )
 
         # Get the positions of the nodes.
-        pos = nx.get_node_attributes(G, "pos")
+        pos = nx.get_node_attributes(graph, "pos")
 
         # Create labels for the nodes with the residue number and type.
         labels = {
@@ -193,7 +195,7 @@ AA_Sequence : {self.aa_sequence}\nHP_Sequence : "
         # Plot the graph.
         plt.figure(figsize=(8, 8))
         nx.draw(
-            G,
+            graph,
             pos,
             with_labels=True,
             labels=labels,

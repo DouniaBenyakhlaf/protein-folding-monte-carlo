@@ -20,7 +20,7 @@ class Lattice:
         The protein contained within the lattice.
     """
 
-    def __init__(self, protein, grid=None):
+    def __init__(self, protein):
         """
         Initialize a Lattice instance with a protein.
 
@@ -30,28 +30,105 @@ class Lattice:
             The protein that will be contained within the lattice.
         """
         self.protein = protein
-        if grid is None:
-            self.dim = protein.length * 4  # dimension of the lattice
-            self.grid = np.empty((self.dim, self.dim), dtype=object)
-            self.grid[:] = None
-            # The protein is initially unfolded and placed horizontally
-            # in the lattice
-            i = self.dim // 2  # the middle of the lattice
-            j = self.dim // 2
-            protein_position = 0
-            while protein_position < self.protein.length:
-                residue = self.protein.get_residue(
-                    protein_position + 1
-                )  # addition +1 because the aa numbers begins with 1
-                residue.i_coord, residue.j_coord = i, j
-                self.grid[i, j] = residue
-                protein_position += 1
-                j += 1
-        else:
-            # in order to test some conformation (energy function etc).
-            # Remove this part later.
-            self.grid = grid
-            self.dim = grid.shape[0]
+        self.dim = protein.length * 4  # dimension of the lattice
+        self.grid = np.empty((self.dim, self.dim), dtype=object)
+        self.grid[:] = None
+        # The protein is initially unfolded and placed horizontally
+        # in the lattice
+        self.place_protein_horizontally()
+        # The protein is placed randomly
+        # self.place_protein_randomly_backtracking()
+
+    def place_protein_horizontally(self):
+        """
+        Place the protein in a unfolded horizontal configuration on the grid.
+
+        This function places the residues of a protein in a straight
+        horizontal line in the middle of a 2D lattice grid. Starting from
+        the center of the grid, it positions each residue sequentially to
+        the right (increasing the j-coordinate) until the entire protein
+        is placed.
+        """
+        # The protein is initially unfolded and placed horizontally
+        # in the lattice
+        i = self.dim // 2  # the middle of the lattice
+        j = self.dim // 2
+        protein_position = 0
+        while protein_position < self.protein.length:
+            residue = self.protein.get_residue(
+                protein_position + 1
+            )  # addition +1 because the aa numbers begins with 1
+            residue.i_coord, residue.j_coord = i, j
+            self.grid[i, j] = residue
+            protein_position += 1
+            j += 1
+
+    def place_protein_randomly_backtracking(self):
+        """
+        Attempt to place the protein randomly on the grid using backtracking.
+
+        This function places the residues of a protein on a 2D lattice grid,
+        starting from the middle of the grid and moving randomly in one of
+        four possible directions (up, down, left, right). It uses a
+        backtracking algorithm to handle situations where no valid position
+        is found for a residue, allowing it to revert to a previous state and
+        try another configuration.
+
+        The function keeps track of previously successful positions in the
+        history list to facilitate backtracking. If a residue cannot be
+        placed, the algorithm removes the last placed residue and attempts
+        another path.
+
+        If no valid placement is found after exploring all possibilities,
+        a message is printed.
+
+        Internal function
+        -----------------
+        backtrack(protein_position, previous_pos) : bool
+        Recursively attempts to place residues on the grid. If successful,
+        it returns True, otherwise it backtracks by undoing the last move
+        and trying a different position.
+        """
+        previous_pos = (
+            self.dim // 2,
+            self.dim // 2,
+        )  # Start in the middle of the lattice
+        next_position = [
+            (-1, 0),
+            (1, 0),
+            (0, -1),
+            (0, 1),
+        ]  # Possible directions (up, down, left, right)
+        protein_position = 0
+
+        def backtrack(protein_position, previous_pos):
+            if protein_position == self.protein.length:
+                return True  # All residues have been placed
+            new_positions = random.sample(
+                next_position, len(next_position)
+            )  # Shuffle directions
+            for pos in new_positions:
+                new_pos = (previous_pos[0] + pos[0], previous_pos[1] + pos[1])
+                if (
+                    self.verify_dim(new_pos)
+                    and self.grid[new_pos[0], new_pos[1]] is None
+                ):
+                    residue = self.protein.get_residue(protein_position + 1)
+                    residue.i_coord, residue.j_coord = new_pos
+                    self.grid[new_pos[0], new_pos[1]] = residue
+
+                    # Try placing the next residue
+                    if backtrack(protein_position + 1, new_pos):
+                        return True  # Successful placement, return
+
+                    # Backtrack: undo the current move if it
+                    # leads to an impasse
+                    self.grid[new_pos[0], new_pos[1]] = None
+            return False  # No valid move, trigger backtracking
+
+        # Start the recursive backtracking algorithm
+        if not backtrack(protein_position, previous_pos):
+            print("No valid protein placement found")
 
     def __str__(self):
         """
@@ -111,8 +188,8 @@ class Lattice:
         Retrieve available adjacent positions in the lattice grid.
 
         This method checks the positions directly adjacent to the given
-        coordinates `(pos_i, pos_j)` in the grid. It returns a list of
-        coordinates where adjacent positions are empty (i.e., `None`).
+        coordinates (pos_i, pos_j) in the grid. It returns a list of
+        coordinates where adjacent positions are empty (i.e., None).
 
         Parameters
         ----------
@@ -145,7 +222,7 @@ class Lattice:
 
         This method updates the grid by removing the residue from its current
         position and placing it at the new coordinates specified. It also
-        updates the `i_coord` and `j_coord` attributes of the `residue`
+        updates the i_coord and j_coord attributes of the residue
         to reflect its new position.
 
         Parameters
@@ -653,18 +730,34 @@ class Lattice:
 
     def random_move(self, residue, pull_prob=0.4):
         """
-        Select a random movement function from a list of possible moves.
+        Attempt a movement chosen randomly for a given residue.
+
+        This function randomly selects a movement type for a specified
+        residue and attempts to move it within the lattice. The movement
+        types include end moves, corner moves, crankshaft moves, and pull
+        moves, each of which has a certain probability of being selected.
+        If a valid move is found, the updated lattice is returned;
+        otherwise, the function returns None.
+
+        The probability of selecting a pull move can be adjusted using
+        the pull_prob parameter, while the other moves share the remaining
+        probability equally.
 
         Parameters
         ----------
+        residue : Residue
+            The residue to be moved within the lattice.
         pull_prob : float, optional
-            Probability of selecting the pull_moves function.
-            The default is 0.4.
+            The probability of selecting a pull move (default is 0.4).
+            The remaining probability is equally distributed among end
+            moves, corner moves, and crankshaft moves.
 
         Returns
         -------
-        function
-            A function reference representing one of the movement strategies.
+        Lattice or None
+            A Lattice object representing the updated lattice
+            configuration if a valid move is found, otherwise None
+            if no move can be made.
         """
         # List of movement functions
         moves = [
