@@ -206,3 +206,51 @@ AA_Sequence : {self.aa_sequence}\nHP_Sequence : "
         )
         plt.title("2D Representation of the Protein Sequence")
         plt.show()
+
+    def generate_pymol_script(
+        self, name, state, filename="protein_representation.pml"
+    ):
+        """
+        Generate a PyMOL script (.pml) for representing a protein using pseudo-atoms
+        and bonds for connecting adjacent residues.
+
+        Parameters
+        ----------
+        protein : Protein
+            An instance of the Protein class with residue coordinates.
+        filename : str, optional
+            The name of the file to save the PyMOL script to (default is "protein_representation.pml").
+        """
+        right = "w"
+        if state > 1:
+            right = "a"
+        with open(filename, right) as f:
+            # Start a new object for the protein
+            # f.write(f"frame {state}\n")
+            # Write pseudo-atoms for each residue
+            for residue in self.hp_sequence:
+                res_name = f"residue_{residue.number}_{state}"
+                x, y = (
+                    residue.j_coord,
+                    residue.i_coord,
+                )  # PyMOL uses x, y, z coordinates
+                f.write(
+                    f'pseudoatom {name}, pos=[{x}, {y}, 0], name="{res_name}", resn="{residue.type}", chain="A", b={residue.number}, state={state}\n'
+                )
+
+            f.write(f"frame {state}\n")
+            # Write bonds between consecutive residues
+            for i in range(self.length - 1):
+                res1 = f"residue_{self.hp_sequence[i].number}_{state}"
+                res2 = f"residue_{self.hp_sequence[i + 1].number}_{state}"
+                f.write(
+                    f"bond ({name} and name {res1}), ({name} and name {res2})\n"
+                )
+
+            # Write commands to visualize the structure
+            f.write(f"show sticks, {name}\n")
+            f.write(f"zoom {name}\n")
+
+            # Optional: Color residues based on type
+            f.write("color red, (resn H)\n")
+            f.write("color blue, (resn P)\n")

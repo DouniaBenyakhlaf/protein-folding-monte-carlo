@@ -179,7 +179,7 @@ class REMCSimulation:
                     return new_lattice
         return current_lattice
 
-    def run(self):
+    def run(self, display=False):
         """
         Execute the Replica Exchange Monte Carlo (REMC) simulation.
 
@@ -191,19 +191,38 @@ class REMCSimulation:
         The process is repeated until the optimal energy is reached or
         the maximum number of iterations is exceeded. The energy of the
         system is printed periodically to track progress.
+
+        Parameters:
+        -----------
+            display : bool, optional (default: False)
+            If True, adds the state of the replicas to a PyMOL script.
         """
         energy = 0
         offset = 0
         nb_iterations = 0
+        # nb states for each replicas
+        states_replicas = [1] * self.nb_replicas
         while energy > self.optimal_energy and nb_iterations < self.max_iter:
             if nb_iterations % 1000 == 0:
                 print(
                     f"===============Iteration {nb_iterations}==============="
                 )
+            num_replica = 0
             for temperature, replica in self.replicas.items():
                 self.replicas[temperature] = self.mcsearch(
                     replica, temperature
                 )
+                # adding the PyMOL representation of the replica state
+                if nb_iterations % 10 == 0:
+                    name = f"replica_{num_replica}"
+                    state = states_replicas[num_replica]
+                    filename = f"../results/replica_{num_replica}.pml"
+                    self.replicas[temperature].protein.generate_pymol_script(
+                        name, state, filename=filename
+                    )
+                    states_replicas[num_replica] += 1
+                num_replica += 1
+                # update the energy
                 new_energy = self.replicas[temperature].compute_energy()
                 energy = min(energy, new_energy)
             i = offset

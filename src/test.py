@@ -39,7 +39,7 @@ if __name__ == "__main__":
     random.seed(1)
     REMC = REMCSimulation(PROTEIN_2, optimal_energy=-9, max_iter=50000)
     REMC.run()
-    # for replica in REMC.replicas.values():
-    #     if replica.compute_energy() == -9:
-    #         replica.protein.plot_protein_graph()
-    #         replica.protein.write_protein_to_pdb()
+    for replica in REMC.replicas.values():
+        if replica.compute_energy() == -9:
+            replica.protein.plot_protein_graph()
+            break
