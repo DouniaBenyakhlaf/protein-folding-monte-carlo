@@ -179,7 +179,9 @@ AA_Sequence : {self.aa_sequence}\nHP_Sequence : "
         # Add each residue as a node to the graph with its 2D coordinates.
         for residue in self.hp_sequence:
             graph.add_node(
-                residue.number, pos=(residue.j_coord, -residue.i_coord)
+                residue.number,
+                pos=(residue.j_coord, -residue.i_coord),
+                type=residue.type,
             )
 
         # Add edges between connected residues.
@@ -192,6 +194,12 @@ AA_Sequence : {self.aa_sequence}\nHP_Sequence : "
         # Get the positions of the nodes.
         pos = nx.get_node_attributes(graph, "pos")
 
+        # Create node color mapping based on residue type.
+        color_map = {
+            residue.number: "red" if residue.type == "H" else "lightblue"
+            for residue in self.hp_sequence
+        }
+
         # Create labels for the nodes with the residue number and type.
         labels = {
             residue.number: f"{residue.number} ({residue.type})"
@@ -199,16 +207,16 @@ AA_Sequence : {self.aa_sequence}\nHP_Sequence : "
         }
 
         # Plot the graph.
-        plt.figure(figsize=(8, 8))
+        plt.figure(figsize=(10, 10))
         nx.draw(
             graph,
             pos,
             with_labels=True,
             labels=labels,
-            node_color="lightblue",
-            node_size=500,
+            node_color=[color_map[node] for node in graph.nodes],
+            node_size=2800,
             font_weight="bold",
-            font_size=10,
+            font_size=14,
         )
         plt.title("2D Representation of the Protein Sequence")
         # Save the figure to the specified file.
