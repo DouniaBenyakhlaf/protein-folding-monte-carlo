@@ -219,20 +219,22 @@ AA_Sequence : {self.aa_sequence}\nHP_Sequence : "
         self, name, state, filename="protein_representation.pml"
     ):
         """
-        Generate a PyMOL script (.pml) for representing a protein using pseudo-atoms
-        and bonds for connecting adjacent residues.
+        Generate a PyMOL script (.pml) for representing a protein.
+
+        Uses pseudo-atoms and bonds for connecting adjacent residues.
 
         Parameters
         ----------
         protein : Protein
             An instance of the Protein class with residue coordinates.
         filename : str, optional
-            The name of the file to save the PyMOL script to (default is "protein_representation.pml").
+            The name of the file to save the PyMOL script to (default
+            is "protein_representation.pml").
         """
         right = "w"
         if state > 1:
             right = "a"
-        with open(filename, right) as f:
+        with open(filename, right, encoding="utf-8") as f:
             # Start a new object for the protein
             # f.write(f"frame {state}\n")
             # Write pseudo-atoms for each residue
@@ -243,7 +245,8 @@ AA_Sequence : {self.aa_sequence}\nHP_Sequence : "
                     residue.i_coord,
                 )  # PyMOL uses x, y, z coordinates
                 f.write(
-                    f'pseudoatom {name}, pos=[{x}, {y}, 0], name="{res_name}", resn="{residue.type}", chain="A", b={residue.number}, state={state}\n'
+                    f'pseudoatom {name}, pos=[{x}, {y}, 0], name="{res_name}",\
+resn="{residue.type}", chain="A", b={residue.number}, state={state}\n'
                 )
 
             f.write(f"frame {state}\n")
@@ -252,7 +255,8 @@ AA_Sequence : {self.aa_sequence}\nHP_Sequence : "
                 res1 = f"residue_{self.hp_sequence[i].number}_{state}"
                 res2 = f"residue_{self.hp_sequence[i + 1].number}_{state}"
                 f.write(
-                    f"bond ({name} and name {res1}), ({name} and name {res2})\n"
+                    f"bond ({name} and name {res1}), ({name} \
+and name {res2})\n"
                 )
 
             # Write commands to visualize the structure

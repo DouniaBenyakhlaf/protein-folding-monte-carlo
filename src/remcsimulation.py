@@ -183,6 +183,23 @@ class REMCSimulation:
     def add_replica_state_to_pymol_script(
         replica, num_replica, states_replicas
     ):
+        """
+        Add the state of a specific replica to a PyMOL script.
+
+        This function generates a PyMOL script for the given state of the
+        specified replica and saves it to a file. It also increments the
+        state index of the replica in the states_replicas list.
+
+        Parameters:
+        -----------
+        replica : Lattice
+            An Lattice object representing the replica.
+        num_replica : int
+            The index of the replica whose state is to be added.
+        states_replicas : list
+            A list where each element represents the state of a replica.
+            The state for num_replica is updated after generating the script.
+        """
         state = states_replicas[num_replica]
         name = f"replica_{num_replica}"
         filename = f"../results/replica_{num_replica}.pml"
