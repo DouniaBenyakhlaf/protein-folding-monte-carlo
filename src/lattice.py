@@ -22,7 +22,7 @@ class Lattice:
         Integer to identify a lattice instance.
     """
 
-    def __init__(self, protein):
+    def __init__(self, protein, is_placed_randomly=False):
         """
         Initialize a Lattice instance with a protein.
 
@@ -30,17 +30,22 @@ class Lattice:
         ----------
         protein : Protein
             The protein that will be contained within the lattice.
+        is_placed_randomly : bool, optional
+            Determines if the protein is placed randomly or
+            horizontally on the grid (default is False).
         """
         self.protein = protein
         self.dim = protein.length * 4  # dimension of the lattice
         self.grid = np.empty((self.dim, self.dim), dtype=object)
         self.grid[:] = None
         self.id = 0  # by default
-        # The protein is initially unfolded and placed horizontally
-        # in the lattice
-        self.place_protein_horizontally()
-        # The protein is placed randomly
-        # self.place_protein_randomly_backtracking()
+        if is_placed_randomly:
+            # The protein is placed randomly
+            self.place_protein_randomly_backtracking()
+        else:
+            # The protein is initially unfolded and placed horizontally
+            # in the lattice
+            self.place_protein_horizontally()
 
     def place_protein_horizontally(self):
         """
