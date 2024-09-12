@@ -16,7 +16,7 @@ git clone git@github.com:DouniaBenyakhlaf/protein-folding-monte-carlo.git
 ```
 cd protein-folding-monte-carlo/
 ```
-3. Create conda environment and install dependendies:
+3. Create conda environment and install dependencies:
 ```
 conda env create -f environment.yml
 ```
