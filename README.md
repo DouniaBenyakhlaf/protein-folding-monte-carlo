@@ -25,11 +25,11 @@ conda env create -f environment.yml
 conda activate montecarlo-env
 ```
 ## Running the Application
-1. Move into the src directory:
+1. Move into the `src` directory:
 ```
 cd src
 ```
-2. Then, run the test.py script:
+2. Then, run the `test.py` script:
 ```
 python3 test.py
 ```
