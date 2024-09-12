@@ -18,6 +18,8 @@ class Lattice:
         The dimension of the numpy array.
     protein : Protein
         The protein contained within the lattice.
+    id : int
+        Integer to identify a lattice instance.
     """
 
     def __init__(self, protein):
@@ -33,6 +35,7 @@ class Lattice:
         self.dim = protein.length * 4  # dimension of the lattice
         self.grid = np.empty((self.dim, self.dim), dtype=object)
         self.grid[:] = None
+        self.id = 0  # by default
         # The protein is initially unfolded and placed horizontally
         # in the lattice
         self.place_protein_horizontally()
@@ -265,6 +268,7 @@ class Lattice:
         """
         new_protein = Protein(self.protein.aa_sequence)
         new_lattice = Lattice(new_protein)
+        new_lattice.id = self.id
         for i in range(self.protein.length):
             residue = self.protein.hp_sequence[i]
             new_lattice.move_residue(

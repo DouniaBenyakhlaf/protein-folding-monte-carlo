@@ -151,8 +151,8 @@ the results directory. The final state of each replica is also represented in a 
         ENERGY = verify_energy()
         REMC = REMCSimulation(SEQUENCE, optimal_energy=ENERGY, max_iter=50000)
         REMC.run()
-        NUM_REPLICA = 0
         for replica in REMC.replicas.values():
+            NUM_REPLICA = replica.id
             print(f"Energy replica {NUM_REPLICA} = {replica.compute_energy()}")
             FILE_NAME = f"replica_{NUM_REPLICA}"
             replica.protein.plot_protein_graph(f"../results/{FILE_NAME}")
@@ -161,7 +161,6 @@ the results directory. The final state of each replica is also represented in a 
                 1,
                 filename=f"../results/{FILE_NAME}.pml",
             )
-            NUM_REPLICA += 1
     else:
         print(f"You have chosen the protein {NUMBER_CHOICE}.")
         print(f"{RED}Start of the protein folding :{RESET}")
@@ -172,19 +171,18 @@ the results directory. The final state of each replica is also represented in a 
         )
         if NUMBER_CHOICE <= 3:
             REMC.run(display=True)
-            NUM_REPLICA = 0
             for replica in REMC.replicas.values():
+                NUM_REPLICA = replica.id
                 replica.protein.plot_protein_graph(
                     f"../results/replica_{NUM_REPLICA}"
                 )
                 print(
                     f"Energy replica {NUM_REPLICA} = {replica.compute_energy()}"
                 )
-                NUM_REPLICA += 1
         else:
             REMC.run()
-            NUM_REPLICA = 0
             for replica in REMC.replicas.values():
+                NUM_REPLICA = replica.id
                 print(
                     f"Energy replica {NUM_REPLICA} = {replica.compute_energy()}"
                 )
@@ -195,7 +193,6 @@ the results directory. The final state of each replica is also represented in a 
                     1,
                     filename=f"../results/{FILE_NAME}.pml",
                 )
-                NUM_REPLICA += 1
         print(
             f"{PURPLE}Don’t forget to check the graphs/scripts generated in the results directory.{RESET}"
         )

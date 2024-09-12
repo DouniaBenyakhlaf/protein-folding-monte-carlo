@@ -83,8 +83,11 @@ class REMCSimulation:
         temperatures = self.linear_distribution_temperature(
             self.tmp_min, self.tmp_max
         )
+        id_replica = 0
         for tmp in temperatures:
             replica = lattice.copy()
+            replica.id = id_replica
+            id_replica += 1
             self.replicas[tmp] = replica
 
     def linear_distribution_temperature(self, tmp_min, tmp_max):
@@ -180,9 +183,7 @@ class REMCSimulation:
         return current_lattice
 
     @staticmethod
-    def add_replica_state_to_pymol_script(
-        replica, num_replica, states_replicas
-    ):
+    def add_replica_state_to_pymol_script(replica, states_replicas):
         """
         Add the state of a specific replica to a PyMOL script.
 
@@ -194,12 +195,11 @@ class REMCSimulation:
         -----------
         replica : Lattice
             An Lattice object representing the replica.
-        num_replica : int
-            The index of the replica whose state is to be added.
         states_replicas : list
             A list where each element represents the state of a replica.
             The state for num_replica is updated after generating the script.
         """
+        num_replica = replica.id
         state = states_replicas[num_replica]
         name = f"replica_{num_replica}"
         filename = f"../results/replica_{num_replica}.pml"
@@ -234,12 +234,11 @@ class REMCSimulation:
                 print(
                     f"\033[32m=======Iteration {nb_iterations}=======\033[0m"
                 )
-            num_replica = 0
             for temperature, replica in self.replicas.items():
                 # adding the PyMOL representation of the first replica state
                 if display and nb_iterations == 0:
                     REMCSimulation.add_replica_state_to_pymol_script(
-                        replica, num_replica, states_replicas
+                        replica, states_replicas
                     )
                 self.replicas[temperature] = self.mcsearch(
                     replica, temperature
@@ -248,9 +247,8 @@ class REMCSimulation:
                 if display:
                     if nb_iterations % 10 == 0:
                         REMCSimulation.add_replica_state_to_pymol_script(
-                            replica, num_replica, states_replicas
+                            replica, states_replicas
                         )
-                    num_replica += 1
                 # update the energy
                 new_energy = self.replicas[temperature].compute_energy()
                 energy = min(energy, new_energy)
@@ -277,10 +275,8 @@ class REMCSimulation:
                 print(f"Energy_{nb_iterations} = {energy}")
         # adding the PyMOL representation of the last replica state
         if display:
-            num_replica = 0
             for replica in self.replicas.values():
                 REMCSimulation.add_replica_state_to_pymol_script(
-                    replica, num_replica, states_replicas
+                    replica, states_replicas
                 )
-                num_replica += 1
         print(f"Minimum energy = {energy}")
